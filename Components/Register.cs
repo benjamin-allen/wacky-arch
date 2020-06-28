@@ -10,10 +10,10 @@ namespace Components
 		public Register(string name)
 		{
 			Name = name;
-			Data = 0;
+			Data = new Word();
 		}
 
-		public byte Data { get; set; }
+		public Word Data { get; private set; }
 
 		private string _Name;
 		public string Name 

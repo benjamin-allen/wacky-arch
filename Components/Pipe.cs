@@ -5,11 +5,12 @@ using System.Text;
 namespace Components
 {
 	/// <summary>
-	/// Pipes can store a value to be read. Pipes contain one value.
+	/// Pipes act as a simple message passing implementation. Pipes contain one value.
 	/// </summary>
 	public class Pipe
 	{
 		public PipeStatus Status { get; set; }
+		public Word Data { get; private set; }
 	}
 
 	public enum PipeStatus
