@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 
-namespace ComponentsTest
+namespace Test.Components
 {
 	[TestClass]
 	public class WordTest

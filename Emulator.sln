@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CPU", "CPU\CPU.csproj", "{5DA28343-963B-42F1-8BC5-550338392D34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CPU", "CPU\CPU.csproj", "{5DA28343-963B-42F1-8BC5-550338392D34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Components", "Components\Components.csproj", "{F9B0D145-9229-4087-B446-73EA1443C150}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Components", "Components\Components.csproj", "{F9B0D145-9229-4087-B446-73EA1443C150}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentsTest", "ComponentsTest\ComponentsTest.csproj", "{B9A0048E-F581-4D71-B065-092A24D8B8CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "ComponentsTest\Test.csproj", "{B9A0048E-F581-4D71-B065-092A24D8B8CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

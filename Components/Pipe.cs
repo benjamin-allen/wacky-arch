@@ -9,8 +9,39 @@ namespace Components
 	/// </summary>
 	public class Pipe
 	{
-		public PipeStatus Status { get; set; }
-		public Word Data { get; private set; }
+		public PipeStatus Status { get; set; } = PipeStatus.Idle;
+		public Word Data { get; private set; } = new Word();
+
+		/// <summary>
+		/// Returns true if the write was completed, allowing the writer to unblock
+		/// </summary>
+		public bool Write(int value)
+		{
+			if(Status != PipeStatus.AwaitingRead)
+			{
+				Data.Value = value;
+				Status = PipeStatus.AwaitingRead;
+				return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Returns true if the read was completed, allowing the reader to unblock
+		/// </summary>
+		/// <returns></returns>
+		public bool Read(out int value)
+		{
+			if(Status == PipeStatus.AwaitingRead)
+			{
+				value = Data.Value;
+				Status = PipeStatus.Idle;
+				return true;
+			}
+			Status = PipeStatus.AwaitingWrite;
+			value = 0;
+			return false;
+		}
 	}
 
 	public enum PipeStatus
