@@ -7,10 +7,13 @@ namespace Components
 	/// <summary>
 	/// Pipes act as a simple message passing implementation. Pipes contain one value.
 	/// </summary>
+	/// <remarks>
+	/// It's expected that readers and writers will wrap calls to pipe methods in appropriate blocker code.
+	/// </remarks>
 	public class Pipe
 	{
 		public PipeStatus Status { get; set; } = PipeStatus.Idle;
-		public Word Data { get; private set; } = new Word();
+		private Word Data { get; set; } = new Word();
 
 		/// <summary>
 		/// Returns true if the write was completed, allowing the writer to unblock
@@ -30,17 +33,18 @@ namespace Components
 		/// Returns true if the read was completed, allowing the reader to unblock
 		/// </summary>
 		/// <returns></returns>
-		public bool Read(out int value)
+		public Word Read(out bool didRead)
 		{
 			if(Status == PipeStatus.AwaitingRead)
 			{
-				value = Data.Value;
+				Word word = new Word { Value = Data.Value };
+				didRead = true;
 				Status = PipeStatus.Idle;
-				return true;
+				return word;
 			}
 			Status = PipeStatus.AwaitingWrite;
-			value = 0;
-			return false;
+			didRead = false;
+			return null;
 		}
 	}
 

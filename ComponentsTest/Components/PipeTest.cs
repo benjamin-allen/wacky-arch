@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Test.Components
@@ -16,7 +17,7 @@ namespace Test.Components
 
 			pipe.Write(1);
 			Assert.AreEqual(PipeStatus.AwaitingRead, pipe.Status);
-			Assert.AreEqual(1, pipe.Data.Value);
+			Assert.AreEqual(1, pipe.Read(out _).Value);
 		}
 
 		[TestMethod] // WR
@@ -27,10 +28,10 @@ namespace Test.Components
 			// Reads should work fine assuming that a value has been written
 			pipe.Write(29);
 
-			int pipeVal;
-			bool result = pipe.Read(out pipeVal);
+			bool result;
+			Word pipeWord = pipe.Read(out result);
 			Assert.AreEqual(true, result);
-			Assert.AreEqual(29, pipeVal);
+			Assert.AreEqual(29, pipeWord.Value);
 			Assert.AreEqual(PipeStatus.Idle, pipe.Status);
 		}
 
@@ -38,41 +39,43 @@ namespace Test.Components
 		public void ReadBeforeWriteReturnsFalse()
 		{
 			Pipe pipe = new Pipe();
+			bool didRead;
 
-			int _;
-			bool didRead = pipe.Read(out _);
+			pipe.Read(out didRead);
 			Assert.AreEqual(false, didRead);
 
 			pipe.Write(1);
-			didRead = pipe.Read(out _);
+			pipe.Read(out _);
 
-			didRead = pipe.Read(out _);
+			pipe.Read(out didRead);
 			Assert.AreEqual(false, didRead);
 		}
 
 		[TestMethod] // WW
-		public void WriteAfterWriteReturnsFalse()
+		public void WriteAfterWriteReturnsFalseAndAbortsWrite()
 		{
 			Pipe pipe = new Pipe();
 
 			Assert.AreEqual(true, pipe.Write(1));
 			Assert.AreEqual(false, pipe.Write(2));
-			int x;
-			Assert.AreEqual(true, pipe.Read(out x));
-			Assert.AreEqual(1, x);
+			Assert.AreEqual(1, pipe.Read(out _).Value);
 		}
 
 		[TestMethod]
 		public void ReadAfterReadReturnsFalse()
 		{
 			Pipe pipe = new Pipe();
+			bool didRead;
 
 			pipe.Write(5);
-			int x;
-			Assert.AreEqual(true, pipe.Read(out x));
-			Assert.AreEqual(5, x);
-			Assert.AreEqual(false, pipe.Read(out x));
-			Assert.AreEqual(0, x);
+
+			Word pipeWord = pipe.Read(out didRead);
+			Assert.AreEqual(true, didRead);
+			Assert.AreEqual(5, pipeWord.Value);
+
+			pipeWord = pipe.Read(out didRead);
+			Assert.AreEqual(false, didRead);
+			Assert.AreEqual(null, pipeWord);
 		}
 	}
 }

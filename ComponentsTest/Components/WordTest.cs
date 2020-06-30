@@ -10,16 +10,13 @@ namespace Test.Components
 	[TestClass]
 	public class WordTest
 	{
-		private static int Min = -(1 << (Word.Size - 1));
-		private static int Max = (1 << (Word.Size - 1)) - 1;
-
 		[TestMethod]
 		public void InRangeValues()
 		{
 			Word word = new Word();
 			Assert.AreEqual(word.Value, 0);
 
-			for(int i = Min; i <= Max; i++)
+			for(int i = Word.Min; i <= Word.Max; i++)
 			{
 				word.Value = i;
 				Assert.AreEqual(i, word.Value);
@@ -35,12 +32,12 @@ namespace Test.Components
 			Random r = new Random();
 			for(int i = 0; i < 1000; i++)
 			{
-				int x = r.Next(Max + 1, int.MaxValue);
-				int y = r.Next(int.MinValue, Min - 1);
+				int x = r.Next(Word.Max + 1, int.MaxValue);
+				int y = r.Next(int.MinValue, Word.Min - 1);
 				word.Value = x;
-				Assert.AreEqual(Max, word.Value);
+				Assert.AreEqual(Word.Max, word.Value);
 				word.Value = y;
-				Assert.AreEqual(Min, word.Value);
+				Assert.AreEqual(Word.Min, word.Value);
 			}
 		}
 
@@ -49,15 +46,15 @@ namespace Test.Components
 		{
 			Word word = new Word();
 
-			word.Value = Min;
-			Assert.AreEqual(Min, word.Value);
-			word.Value = Min - 1;
-			Assert.AreEqual(Min, word.Value);
+			word.Value = Word.Min;
+			Assert.AreEqual(Word.Min, word.Value);
+			word.Value = Word.Min - 1;
+			Assert.AreEqual(Word.Min, word.Value);
 
-			word.Value = Max;
-			Assert.AreEqual(Max, word.Value);
-			word.Value = Max + 1;
-			Assert.AreEqual(Max, word.Value);
+			word.Value = Word.Max;
+			Assert.AreEqual(Word.Max, word.Value);
+			word.Value = Word.Max + 1;
+			Assert.AreEqual(Word.Max, word.Value);
 		}
 
 		[TestMethod]
@@ -68,12 +65,12 @@ namespace Test.Components
 			// 0
 			Assert.AreEqual(new string('0', Word.Size), word.ToBin());
 
-			// Max
-			word.Value = Max;
+			// Word.Max
+			word.Value = Word.Max;
 			Assert.AreEqual("0" + new string('1', Word.Size - 1), word.ToBin());
 
-			// Min
-			word.Value = Min;
+			// Word.Min
+			word.Value = Word.Min;
 			Assert.AreEqual("1" + new string('0', Word.Size - 1), word.ToBin());
 		}
 
@@ -83,12 +80,12 @@ namespace Test.Components
 			Trace.Listeners.Add(new ConsoleTraceListener());
 			Word word = new Word();
 
-			for(int i = 0; i < Max; i+=16)
+			for(int i = 0; i < Word.Max; i+=16)
 			{
 				word.Value = i;
 				Trace.WriteLine(word.ToBin());
 			}
-			for(int i = Min; i < 0; i+=16)
+			for(int i = Word.Min; i < 0; i+=16)
 			{
 				word.Value = i;
 				Trace.WriteLine(word.ToBin());
@@ -103,12 +100,12 @@ namespace Test.Components
 			// 0
 			Assert.AreEqual(new string('0', (int)Math.Ceiling(Word.Size / 4.0)), word.ToHex());
 
-			// Max
-			word.Value = Max;
+			// Word.Max
+			word.Value = Word.Max;
 			Assert.AreEqual(Convert.ToString(word.Value, 16).ToUpper(), word.ToHex());
 
-			// Min
-			word.Value = Min;
+			// Word.Min
+			word.Value = Word.Min;
 			// We expect the value to be 100....000 in binary, so we need to construct the equivalent hex string.
 			int signBitLocation = (Word.Size - 1) % 4;
 			string frontDigit = Convert.ToString(1 << signBitLocation, 16);
@@ -134,12 +131,12 @@ namespace Test.Components
 			Trace.Listeners.Add(new ConsoleTraceListener());
 			Word word = new Word();
 
-			for (int i = 0; i < Max; i += 16)
+			for (int i = 0; i < Word.Max; i += 16)
 			{
 				word.Value = i;
 				Trace.WriteLine(word.ToHex());
 			}
-			for (int i = Min; i < 0; i += 16)
+			for (int i = Word.Min; i < 0; i += 16)
 			{
 				word.Value = i;
 				Trace.WriteLine(word.ToHex());

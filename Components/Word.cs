@@ -12,6 +12,8 @@ namespace Components
 	public class Word
 	{
 		public static int Size = 11; // in bits
+		public static int Max = (1 << (Size - 1)) - 1;
+		public static int Min = -(1 << (Size - 1));
 
 		private int _Value;
 		public int Value
@@ -22,15 +24,13 @@ namespace Components
 
 		private int Bound(int value)
 		{
-			int max = (1 << (Size - 1)) - 1;
-			int min = -(1 << (Size - 1));
-			if(value > max)
+			if(value > Max)
 			{
-				return max;
+				return Max;
 			}
-			else if(value < min)
+			else if(value < Min)
 			{
-				return min;
+				return Min;
 			}
 			return value;
 		}
