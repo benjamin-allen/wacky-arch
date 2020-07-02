@@ -27,7 +27,7 @@ namespace Components
 			}
 			if(numWords > Word.Max + 1) // Max address is numWords - 1
 			{
-				throw new ArgumentException("NumWords must be less than " + (Word.Max + 1));
+				throw new ArgumentException("NumWords must be less than or equal to " + (Word.Max + 1));
 			}
 
 			Words = new Word[numWords];

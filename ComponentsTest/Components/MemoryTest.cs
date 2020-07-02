@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Test.Components
@@ -85,6 +86,74 @@ namespace Test.Components
 			memory.Data.Write(0);
 			memory.Cycle();
 			Assert.AreEqual(0, memory.Words[0].Value);
+		}
+
+		[TestMethod]
+		public void CanWriteToMemoryWithDelays()
+		{
+			Memory memory = new Memory(1);
+			Assert.AreEqual(0, memory.Words[0].Value);
+
+			memory.Address.Write(0);
+			memory.Cycle();
+			for(int i = 0; i < new Random().Next(3, 20); i++)
+			{
+				memory.Cycle();
+			}
+			memory.Data.Write(85);
+			for (int i = 0; i < new Random().Next(3, 20); i++)
+			{
+				memory.Cycle();
+			}
+			Assert.AreEqual(85, memory.Words[0].Value);
+		}
+
+		[TestMethod]
+		public void RandomDelayRandomWrite()
+		{
+			Random r = new Random();
+			int n = 1 << r.Next(3, Word.Size - 1);
+			int[] addresses = new int[n];
+			int[] data = new int[n];
+			Memory memory = new Memory(n);
+
+			for(int i = 0; i < n; i++)
+			{
+				addresses[i] = i;
+				data[i] = r.Next(Word.Min, Word.Max + 1);
+			}
+			addresses = addresses.OrderBy(x => r.Next()).ToArray(); // shuffle addresses
+
+			for(int i = 0; i < n; i++)
+			{
+				// pull out the address and data.
+				int addr = addresses[i];
+				int dat = data[i];
+
+				StressCycle();
+				memory.Address.Write(addr);
+
+				StressCycle();
+				memory.Data.Write(dat);
+
+				StressCycle();
+				Assert.AreEqual(dat, memory.Data.Read(out _).Value);
+			}
+
+			// Now that the writes are complete, iterate over memory and verify that each address contains the data associated
+			for(int i = 0; i < n; i++)
+			{
+				Assert.AreEqual(data[i], memory.Words[addresses[i]].Value);
+			}
+
+			// Wait a random amount of cycles (at least one), then read data and verify it matches dat
+			void StressCycle()
+			{
+				for(int j = 0; j < r.Next(1, 50); j++)
+				{
+					memory.Cycle();
+				}
+			}
 		}
 	}
 }
