@@ -12,13 +12,14 @@ namespace Components
 	/// </remarks>
 	public class Pipe
 	{
+		public string Name { get; set; }
 		public PipeStatus Status { get; set; } = PipeStatus.Idle;
 		private Word Data { get; set; } = new Word();
 
 		/// <summary>
 		/// Returns true if the write was completed, allowing the writer to unblock
 		/// </summary>
-		public bool Write(int value)
+		public virtual bool Write(int value)
 		{
 			if(Status != PipeStatus.AwaitingRead)
 			{
@@ -45,6 +46,18 @@ namespace Components
 			Status = PipeStatus.AwaitingWrite;
 			didRead = false;
 			return null;
+		}
+	}
+
+	public class AlwaysWriteablePipe : Pipe
+	{
+		///<summary>
+		///Always allows a write
+		///</summary>
+		public override bool Write(int value)
+		{
+			Status = PipeStatus.Idle;
+			return base.Write(value);
 		}
 	}
 

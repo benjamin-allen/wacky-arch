@@ -117,7 +117,7 @@ namespace Test.Components
 			hex = "65".PadLeft((int)Math.Ceiling(Word.Size / 4.0), '0');
 			Assert.AreEqual(hex, word.ToHex());
 
-			// -6
+			// -26
 			word.Value = -26;
 			hex = "e6".PadLeft((int)Math.Ceiling(Word.Size / 4.0), 'f');
 			frontDigit = Convert.ToString((1 << (Word.Size % 4)) - 1, 16);
