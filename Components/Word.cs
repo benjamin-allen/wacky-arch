@@ -11,7 +11,7 @@ namespace Components
 	/// </summary>
 	public class Word
 	{
-		public static int Size = 11; // in bits
+		public static int Size = 12; // in bits
 		public static int Max = (1 << (Size - 1)) - 1;
 		public static int Min = -(1 << (Size - 1));
 

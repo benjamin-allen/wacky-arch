@@ -120,7 +120,8 @@ namespace Test.Components
 			// -26
 			word.Value = -26;
 			hex = "e6".PadLeft((int)Math.Ceiling(Word.Size / 4.0), 'f');
-			frontDigit = Convert.ToString((1 << (Word.Size % 4)) - 1, 16);
+			var frontDigits = new string[] { "F", "1", "3", "7" };
+			frontDigit = frontDigits[Word.Size % 4];
 			hex = frontDigit + hex.Substring(1);
 			Assert.AreEqual(hex.ToUpper(), word.ToHex());
 		}
