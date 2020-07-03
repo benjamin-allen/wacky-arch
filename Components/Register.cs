@@ -14,12 +14,6 @@ namespace Components
 		}
 
 		public Word Data { get; private set; }
-
-		private string _Name;
-		public string Name 
-		{
-			get { return _Name; }
-			set { _Name = value.Substring(0, 3); }
-		}
+		public string Name { get; private set; }
 	}
 }
