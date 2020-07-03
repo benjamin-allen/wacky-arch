@@ -9,8 +9,8 @@ The CPU also contains a Program Counter register to fetch instructions from.
 |x| Add Register        | ADD       | 0000 xxyy 0000  | X = X + Y                |                                                                                                              |
 |x| Subtract Register   | SUB       | 0000 xxyy 0001  | X = X - Y                |                                                                                                              |
 |x| Multiply Register   | MUL       | 0000 xxyy 0010  | X = XY (bounded)         | i.e. X gets the lower bits of the multiplication (Todo: Can we make a way for Y to get the high bits sanely?)|
-| | Divide Register     | DIV       | 0000 xxyy 0011  | X = X / Y, Y = X % Y     | i.e. X gets the quotient, and Y gets the remainder.                                                          |
-| | Modulus Register    | MOD       | 0000 xxyy 0100  | X = X % Y                |                                                                                                              |
+|x| Divide Register     | DIV       | 0000 xxyy 0011  | X = X / Y, Y = X % Y     | i.e. X gets the quotient, and Y gets the remainder.                                                          |
+|x| Modulus Register    | MOD       | 0000 xxyy 0100  | X = X % Y                |                                                                                                              |
 | | Negate Register     | NEG       | 0000 --xx 0101  | X = -X                   |                                                                                                              |
 | | AND Register        | AND       | 0000 xxyy 1010  | X = X & Y                |                                                                                                              |
 | | OR Register         | OR        | 0000 xxyy 1011  | X = X | Y                |                                                                                                              |

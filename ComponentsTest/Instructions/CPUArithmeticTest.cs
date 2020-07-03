@@ -253,5 +253,126 @@ namespace Test.Instructions
 				Assert.AreEqual(factors2[i], cpu.Registers[regs2[i]].Data.Value);
 			}
 		}
+
+
+		[TestMethod]
+		public void TestDivBasic()
+		{
+			cpu.Registers[0].Data.Value = 12;
+			cpu.Registers[1].Data.Value = 5;
+			cpu.Registers[2].Data.Value = 8;
+			cpu.Registers[3].Data.Value = -2;
+
+			var insn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0001_0011 });
+			var insn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_1011_0011 });
+
+			insn1.Execute();
+			insn2.Execute();
+			Assert.AreEqual(2, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(2, cpu.Registers[1].Data.Value);
+			Assert.AreEqual(-4, cpu.Registers[2].Data.Value);
+			Assert.AreEqual(0, cpu.Registers[3].Data.Value);
+		}
+
+
+		[TestMethod]
+		public void TestDivExtended()
+		{
+			Random r = new Random();
+			int n = 1 << r.Next(4, 11);
+			int[] dividends = new int[n];
+			int[] divisors = new int[n];
+			int[] regs1 = new int[n];
+			int[] regs2 = new int[n];
+			int[] quotients = new int[n];
+			int[] remainders = new int[n];
+			for (int i = 0; i < n; i++)
+			{
+				dividends[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				divisors[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				regs1[i] = r.Next(0, 4);
+				regs2[i] = r.Next(0, 4);
+				if (regs2[i] == regs1[i])
+				{
+					regs2[i] = (regs2[i] + 1) % 4;
+				}
+				quotients[i] = dividends[i] / divisors[i];
+				remainders[i] = dividends[i] % divisors[i];
+			}
+
+			for (int i = 0; i < n; i++)
+			{
+				cpu.Registers[regs1[i]].Data.Value = dividends[i];
+				cpu.Registers[regs2[i]].Data.Value = divisors[i];
+				int x = regs1[i];
+				int y = regs2[i];
+				Assert.AreNotEqual(x, y);
+				Word insnWord = new Word { Value = (x << 6) + (y << 4) + 3 };
+				var insn = new ArithmeticInstruction(cpu, insnWord);
+				insn.Execute();
+
+				Assert.AreEqual(quotients[i], cpu.Registers[regs1[i]].Data.Value);
+				Assert.AreEqual(remainders[i], cpu.Registers[regs2[i]].Data.Value);
+			}
+		}
+
+
+		[TestMethod]
+		public void TestModBasic()
+		{
+			cpu.Registers[0].Data.Value = 8;
+			cpu.Registers[1].Data.Value = 3;
+			cpu.Registers[2].Data.Value = 9;
+			cpu.Registers[3].Data.Value = 1;
+
+			var insn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0001_0100 });
+			var insn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_1011_0100 });
+
+			insn1.Execute();
+			insn2.Execute();
+
+			Assert.AreEqual(2, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(0, cpu.Registers[2].Data.Value);
+		}
+
+
+		[TestMethod]
+		public void TestModExtended()
+		{
+			Random r = new Random();
+			int n = 1 << r.Next(4, 11);
+			int[] numbers = new int[n];
+			int[] moduli = new int[n];
+			int[] regs1 = new int[n];
+			int[] regs2 = new int[n];
+			int[] congruences = new int[n];
+			for (int i = 0; i < n; i++)
+			{
+				numbers[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				moduli[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				regs1[i] = r.Next(0, 4);
+				regs2[i] = r.Next(0, 4);
+				if (regs2[i] == regs1[i])
+				{
+					regs2[i] = (regs2[i] + 1) % 4;
+				}
+				congruences[i] = numbers[i] % moduli[i];
+			}
+
+			for (int i = 0; i < n; i++)
+			{
+				cpu.Registers[regs1[i]].Data.Value = numbers[i];
+				cpu.Registers[regs2[i]].Data.Value = moduli[i];
+				int x = regs1[i];
+				int y = regs2[i];
+				Assert.AreNotEqual(x, y);
+				Word insnWord = new Word { Value = (x << 6) + (y << 4) + 4 };
+				var insn = new ArithmeticInstruction(cpu, insnWord);
+				insn.Execute();
+
+				Assert.AreEqual(congruences[i], cpu.Registers[regs1[i]].Data.Value);
+				Assert.AreEqual(moduli[i], cpu.Registers[regs2[i]].Data.Value);
+			}
+		}
 	}
 }
