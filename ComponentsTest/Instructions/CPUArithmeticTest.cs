@@ -27,7 +27,7 @@ namespace Test.Instructions
 			cpu.Registers[3].Data.Value = -2;
 
 			Word insn = new Word { Value = 0b0000_0001_0000 };
-			var addInsn = new AddInstruction(cpu, insn);
+			var addInsn = new ArithmeticInstruction(cpu, insn);
 
 			addInsn.Execute();
 			Assert.AreEqual(92, cpu.Registers[0].Data.Value);
@@ -44,8 +44,8 @@ namespace Test.Instructions
 			cpu.Registers[2].Data.Value = Word.Min + 5;
 			cpu.Registers[3].Data.Value = -10;
 
-			var insn1 = new AddInstruction(cpu, new Word { Value = 0b0000_0001_0000 });
-			var insn2 = new AddInstruction(cpu, new Word { Value = 0b0000_1011_0000 });
+			var insn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0001_0000 });
+			var insn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_1011_0000 });
 
 			insn1.Execute();
 			insn2.Execute();
@@ -84,7 +84,7 @@ namespace Test.Instructions
 				int y = regs2[i];
 				Assert.AreNotEqual(x, y);
 				Word insnWord = new Word { Value = (x << 6) + (y << 4) };
-				AddInstruction insn = new AddInstruction(cpu, insnWord);
+				var insn = new ArithmeticInstruction(cpu, insnWord);
 				insn.Execute();
 
 				Assert.AreEqual(sums[i], cpu.Registers[regs1[i]].Data.Value);
@@ -100,7 +100,7 @@ namespace Test.Instructions
 			cpu.Registers[2].Data.Value = 2;
 			cpu.Registers[3].Data.Value = 3;
 
-			var subInsn = new SubtractInstruction(cpu, new Word { Value = 0b0000_0001_0001 });
+			var subInsn = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0001_0001 });
 			subInsn.Execute();
 
 			Assert.AreEqual(-2, cpu.Registers[0].Data.Value);
@@ -117,8 +117,8 @@ namespace Test.Instructions
 			cpu.Registers[2].Data.Value = Word.Min;
 			cpu.Registers[3].Data.Value = 1;
 
-			var subInsn1 = new SubtractInstruction(cpu, new Word { Value = 0b0000_0001_0001 });
-			var subInsn2 = new SubtractInstruction(cpu, new Word { Value = 0b0000_1011_0001 });
+			var subInsn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0001_0001 });
+			var subInsn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_1011_0001 });
 			subInsn1.Execute();
 			subInsn2.Execute();
 
@@ -157,7 +157,7 @@ namespace Test.Instructions
 				int y = regs2[i];
 				Assert.AreNotEqual(x, y);
 				Word insnWord = new Word { Value = (x << 6) + (y << 4) + 1 };
-				SubtractInstruction insn = new SubtractInstruction(cpu, insnWord);
+				var insn = new ArithmeticInstruction(cpu, insnWord);
 				insn.Execute();
 
 				Assert.AreEqual(differences[i], cpu.Registers[regs1[i]].Data.Value);
