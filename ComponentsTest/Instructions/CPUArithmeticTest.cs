@@ -3,6 +3,7 @@ using CPU.Instructions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace Test.Instructions
@@ -12,11 +13,13 @@ namespace Test.Instructions
 	{
 		private CPU.CPU cpu;
 
+
 		[TestInitialize]
 		public void TestInitialize()
 		{
 			cpu = new CPU.CPU();
 		}
+
 
 		[TestMethod]
 		public void TestAddBasic()
@@ -36,6 +39,7 @@ namespace Test.Instructions
 			Assert.AreEqual(-2, cpu.Registers[3].Data.Value);
 		}
 
+
 		[TestMethod]
 		public void TestAddEdgeCases()
 		{
@@ -52,6 +56,7 @@ namespace Test.Instructions
 			Assert.AreEqual(Word.Max, cpu.Registers[0].Data.Value);
 			Assert.AreEqual(Word.Min, cpu.Registers[2].Data.Value);
 		}
+
 
 		[TestMethod]
 		public void TestAddExtended()
@@ -92,6 +97,7 @@ namespace Test.Instructions
 			}
 		}
 
+
 		[TestMethod]
 		public void TestSubBasic()
 		{
@@ -109,6 +115,7 @@ namespace Test.Instructions
 			Assert.AreEqual(3, cpu.Registers[3].Data.Value);
 		}
 
+
 		[TestMethod]
 		public void TestSubEdgeCases()
 		{
@@ -125,6 +132,7 @@ namespace Test.Instructions
 			Assert.AreEqual(Word.Max, cpu.Registers[0].Data.Value);
 			Assert.AreEqual(Word.Min, cpu.Registers[2].Data.Value);
 		}
+
 
 		[TestMethod]
 		public void TestSubExtended()
@@ -162,6 +170,87 @@ namespace Test.Instructions
 
 				Assert.AreEqual(differences[i], cpu.Registers[regs1[i]].Data.Value);
 				Assert.AreEqual(subtrahends[i], cpu.Registers[regs2[i]].Data.Value);
+			}
+		}
+
+		
+		[TestMethod]
+		public void TestMulBasic()
+		{
+			cpu.Registers[0].Data.Value = 2;
+			cpu.Registers[1].Data.Value = 3;
+			cpu.Registers[2].Data.Value = -5;
+			cpu.Registers[3].Data.Value = 3;
+
+			var insn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0111_0010 });
+			var insn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_1000_0010 });
+
+			insn1.Execute();
+			Assert.AreEqual(9, cpu.Registers[1].Data.Value);
+			Assert.AreEqual(3, cpu.Registers[3].Data.Value);
+
+			insn2.Execute();
+			Assert.AreEqual(-10, cpu.Registers[2].Data.Value);
+			Assert.AreEqual(2, cpu.Registers[0].Data.Value);
+		}
+
+
+		[TestMethod]
+		public void TestMulEdgeCases()
+		{
+			cpu.Registers[0].Data.Value = 1024;
+			cpu.Registers[1].Data.Value = 4;
+			cpu.Registers[2].Data.Value = -1024;
+
+			var insn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0001_0010 });
+			var insn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_1001_0010 });
+
+			insn1.Execute();
+			Assert.AreEqual(Word.Max, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(4, cpu.Registers[1].Data.Value);
+
+			insn2.Execute();
+			Assert.AreEqual(Word.Min, cpu.Registers[2].Data.Value);
+			Assert.AreEqual(4, cpu.Registers[1].Data.Value);
+		}
+
+
+		[TestMethod]
+		public void TestMulExtended()
+		{
+			Random r = new Random();
+			int n = 1 << r.Next(4, 11);
+			int[] factors1 = new int[n];
+			int[] factors2 = new int[n];
+			int[] regs1 = new int[n];
+			int[] regs2 = new int[n];
+			int[] products = new int[n];
+			for (int i = 0; i < n; i++)
+			{
+				factors1[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				factors2[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				regs1[i] = r.Next(0, 4);
+				regs2[i] = r.Next(0, 4);
+				if (regs2[i] == regs1[i])
+				{
+					regs2[i] = (regs2[i] + 1) % 4;
+				}
+				products[i] = (factors1[i] * factors2[i] > Word.Max) ? Word.Max : (factors1[i] * factors2[i] < Word.Min ? Word.Min : factors1[i] * factors2[i]);
+			}
+
+			for (int i = 0; i < n; i++)
+			{
+				cpu.Registers[regs1[i]].Data.Value = factors1[i];
+				cpu.Registers[regs2[i]].Data.Value = factors2[i];
+				int x = regs1[i];
+				int y = regs2[i];
+				Assert.AreNotEqual(x, y);
+				Word insnWord = new Word { Value = (x << 6) + (y << 4) + 2 };
+				var insn = new ArithmeticInstruction(cpu, insnWord);
+				insn.Execute();
+
+				Assert.AreEqual(products[i], cpu.Registers[regs1[i]].Data.Value);
+				Assert.AreEqual(factors2[i], cpu.Registers[regs2[i]].Data.Value);
 			}
 		}
 	}

@@ -30,6 +30,11 @@ namespace CPU.Instructions
 					// Subtract
 					Cpu.Registers[X].Data.Value = Cpu.Registers[X].Data.Value - Cpu.Registers[Y].Data.Value;
 					break;
+				case 0x2:
+					// Multiply
+					int xy = Cpu.Registers[X].Data.Value * Cpu.Registers[Y].Data.Value;
+					Cpu.Registers[X].Data.Value = xy;
+					break;
 				default:
 					throw new InvalidOperationException("Invalid FuncCode!");
 			}
