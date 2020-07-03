@@ -7,7 +7,7 @@ namespace Components
 {
 
 	/// <summary>
-	/// For this project, a word is an 11-bit value that is "sticky" (doesn't overflow) 
+	/// For this project, a word is an Size-bit value that is "sticky" (doesn't overflow) 
 	/// </summary>
 	public class Word
 	{
