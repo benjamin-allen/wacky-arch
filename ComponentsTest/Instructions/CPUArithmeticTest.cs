@@ -91,5 +91,78 @@ namespace Test.Instructions
 				Assert.AreEqual(addends2[i], cpu.Registers[regs2[i]].Data.Value);
 			}
 		}
+
+		[TestMethod]
+		public void TestSubBasic()
+		{
+			cpu.Registers[0].Data.Value = 45;
+			cpu.Registers[1].Data.Value = 47;
+			cpu.Registers[2].Data.Value = 2;
+			cpu.Registers[3].Data.Value = 3;
+
+			var subInsn = new SubtractInstruction(cpu, new Word { Value = 0b0000_0001_0001 });
+			subInsn.Execute();
+
+			Assert.AreEqual(-2, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(47, cpu.Registers[1].Data.Value);
+			Assert.AreEqual(2, cpu.Registers[2].Data.Value);
+			Assert.AreEqual(3, cpu.Registers[3].Data.Value);
+		}
+
+		[TestMethod]
+		public void TestSubEdgeCases()
+		{
+			cpu.Registers[0].Data.Value = Word.Max;
+			cpu.Registers[1].Data.Value = -1;
+			cpu.Registers[2].Data.Value = Word.Min;
+			cpu.Registers[3].Data.Value = 1;
+
+			var subInsn1 = new SubtractInstruction(cpu, new Word { Value = 0b0000_0001_0001 });
+			var subInsn2 = new SubtractInstruction(cpu, new Word { Value = 0b0000_1011_0001 });
+			subInsn1.Execute();
+			subInsn2.Execute();
+
+			Assert.AreEqual(Word.Max, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(Word.Min, cpu.Registers[2].Data.Value);
+		}
+
+		[TestMethod]
+		public void TestSubExtended()
+		{
+			Random r = new Random();
+			int n = 1 << r.Next(4, 11);
+			int[] subtends = new int[n];
+			int[] subtrahends = new int[n];
+			int[] regs1 = new int[n];
+			int[] regs2 = new int[n];
+			int[] differences = new int[n];
+			for (int i = 0; i < n; i++)
+			{
+				subtends[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				subtrahends[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				regs1[i] = r.Next(0, 4);
+				regs2[i] = r.Next(0, 4);
+				if (regs2[i] == regs1[i])
+				{
+					regs2[i] = (regs2[i] + 1) % 4;
+				}
+				differences[i] = subtends[i] - subtrahends[i];
+			}
+
+			for (int i = 0; i < n; i++)
+			{
+				cpu.Registers[regs1[i]].Data.Value = subtends[i];
+				cpu.Registers[regs2[i]].Data.Value = subtrahends[i];
+				int x = regs1[i];
+				int y = regs2[i];
+				Assert.AreNotEqual(x, y);
+				Word insnWord = new Word { Value = (x << 6) + (y << 4) + 1 };
+				SubtractInstruction insn = new SubtractInstruction(cpu, insnWord);
+				insn.Execute();
+
+				Assert.AreEqual(differences[i], cpu.Registers[regs1[i]].Data.Value);
+				Assert.AreEqual(subtrahends[i], cpu.Registers[regs2[i]].Data.Value);
+			}
+		}
 	}
 }

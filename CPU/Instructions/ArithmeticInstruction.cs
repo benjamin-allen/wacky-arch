@@ -34,4 +34,20 @@ namespace CPU.Instructions
 			Cpu.Registers[X].Data.Value = Cpu.Registers[X].Data.Value + Cpu.Registers[Y].Data.Value;
 		}
 	}
+
+	public class SubtractInstruction : ArithmeticInstruction
+	{
+		public SubtractInstruction(CPU cpu, Word word) : base(cpu, word)
+		{
+			if(FuncCode != 0x1)
+			{
+				throw new InvalidOperationException("Created SubtractInstruction with invalid FuncCode");
+			}
+		}
+
+		public override void Execute()
+		{
+			Cpu.Registers[X].Data.Value = Cpu.Registers[X].Data.Value - Cpu.Registers[Y].Data.Value;
+		}
+	}
 }
