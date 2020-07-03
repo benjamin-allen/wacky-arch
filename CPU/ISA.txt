@@ -10,7 +10,8 @@ The CPU also contains a Program Counter register to fetch instructions from.
 | Subtract Register   | SUB       | 0000 xxyy 0001  | X = X - Y                               |                                                                                                              |
 | Multiply Register   | MUL       | 0000 xxyy 0010  | X = XY (high bits), Y = XY (low bits)   | i.e. the 24 bit result is split between X and Y. X holds the MSB, Y the LSB                                  |
 | Divide Register     | DIV       | 0000 xxyy 0011  | X = X / Y, Y = X % Y                    | i.e. X gets the quotient, and Y gets the remainder.                                                          |
-| Negate Register     | NEG       | 0000 --xx 0100  | X = -X                                  |                                                                                                              |
+| Modulus Register    | MOD       | 0000 xxyy 0100  | X = X % Y                               |                                                                                                              |
+| Negate Register     | NEG       | 0000 --xx 0101  | X = -X                                  |                                                                                                              |
 | AND Register        | AND       | 0000 xxyy 1010  | X = X & Y                               |                                                                                                              |
 | OR Register         | OR        | 0000 xxyy 1011  | X = X | Y                               |                                                                                                              |
 | XOR Register        | XOR       | 0000 xxyy 1100  | X = X ^ Y                               |                                                                                                              |
@@ -36,7 +37,8 @@ The CPU also contains a Program Counter register to fetch instructions from.
 |                     |           |                 |                                         |                                                                                                              |
 | Add Constant        | ADDC      | 1010 vvvv vvvv  | CONST = CONST + V                       | V is assumed to be unsigned                                                                                  |
 | Sub Constant        | SUBC      | 1011 vvvv vvvv  | CONST = CONST - V                       | V is assumed to be unsigned                                                                                  |
-| AND Constant        | ANDC      | 1100 vvvv vvvv  | CONST = CONST & V                       | V's upper bit is extended                                                                                    |
-| OR Constant         | ORC       | 1101 vvvv vvvv  | CONST = CONST | V                       | V's upper bit is extended                                                                                    |
+| Mod Constant        | MODC      | 1100 vvvv vvvv  | CONST = CONST % V                       | V is assumed to be unsigned                                                                                  |
+| AND Constant        | ANDC      | 1101 vvvv vvvv  | CONST = CONST & V                       | V's upper bit is extended                                                                                    |
+| OR Constant         | ORC       | 1110 vvvv vvvv  | CONST = CONST | V                       | V's upper bit is extended                                                                                    |
 | Move Constant       | MOVC      | 1111 vvvv vvvv  | CONST = V                               |                                                                                                              |
 +------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
