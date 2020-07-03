@@ -55,6 +55,10 @@ namespace CPU.Instructions
 
 					Cpu.Registers[X].Data.Value = Cpu.Registers[X].Data.Value % Cpu.Registers[Y].Data.Value;
 					break;
+				case 0x5:
+					// Negate
+					Cpu.Registers[Y].Data.Value = -Cpu.Registers[Y].Data.Value;
+					break;
 				default:
 					throw new InvalidOperationException("Invalid FuncCode!");
 			}

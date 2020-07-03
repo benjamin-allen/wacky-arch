@@ -374,5 +374,57 @@ namespace Test.Instructions
 				Assert.AreEqual(moduli[i], cpu.Registers[regs2[i]].Data.Value);
 			}
 		}
+
+		[TestMethod]
+		public void TestNegBasic()
+		{
+			cpu.Registers[0].Data.Value = 0;
+			cpu.Registers[1].Data.Value = 1;
+			cpu.Registers[2].Data.Value = Word.Max;
+			cpu.Registers[3].Data.Value = Word.Min;
+
+			var insn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0000_0101 });
+			var insn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0001_0101 });
+			var insn3 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0010_0101 });
+			var insn4 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0011_0101 });
+
+			insn1.Execute();
+			insn2.Execute();
+			insn3.Execute();
+			insn4.Execute();
+
+			Assert.AreEqual(0, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(-1, cpu.Registers[1].Data.Value);
+			Assert.AreEqual(Word.Min + 1, cpu.Registers[2].Data.Value);
+			Assert.AreEqual(Word.Max, cpu.Registers[3].Data.Value);
+		}
+
+
+		[TestMethod]
+		public void TestNegExtended()
+		{
+			Random r = new Random();
+			int n = 1 << r.Next(4, 11);
+			int[] numbers = new int[n];
+			int[] regs1 = new int[n];
+			int[] negatives = new int[n];
+			for (int i = 0; i < n; i++)
+			{
+				numbers[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				regs1[i] = r.Next(0, 4);
+				negatives[i] = -numbers[i];
+			}
+
+			for (int i = 0; i < n; i++)
+			{
+				cpu.Registers[regs1[i]].Data.Value = numbers[i];
+				int x = regs1[i];
+				Word insnWord = new Word { Value = (x << 4) + 5 };
+				var insn = new ArithmeticInstruction(cpu, insnWord);
+				insn.Execute();
+
+				Assert.AreEqual(negatives[i], cpu.Registers[regs1[i]].Data.Value);
+			}
+		}
 	}
 }
