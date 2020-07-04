@@ -35,6 +35,13 @@ namespace Components
 			return value;
 		}
 
+		public int AssignBitwise(int value)
+		{
+			int term = value & ((1 << Size) - 1);
+			_Value = term;
+			return term;
+		}
+
 		public string ToBin()
 		{
 			string longForm = Convert.ToString(Value, 2).PadLeft(Size, '0');

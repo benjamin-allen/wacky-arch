@@ -59,6 +59,18 @@ namespace CPU.Instructions
 					// Negate
 					Cpu.Registers[Y].Data.Value = -Cpu.Registers[Y].Data.Value;
 					break;
+				case 0xA:
+					Cpu.Registers[X].Data.AssignBitwise(Cpu.Registers[X].Data.Value & Cpu.Registers[Y].Data.Value);
+					break;
+				case 0xB:
+					Cpu.Registers[X].Data.AssignBitwise(Cpu.Registers[X].Data.Value | Cpu.Registers[Y].Data.Value);
+					break;
+				case 0xC:
+					Cpu.Registers[X].Data.AssignBitwise(Cpu.Registers[X].Data.Value ^ Cpu.Registers[Y].Data.Value);
+					break;
+				case 0xD:
+					Cpu.Registers[Y].Data.AssignBitwise(~Cpu.Registers[Y].Data.Value);
+					break;
 				default:
 					throw new InvalidOperationException("Invalid FuncCode!");
 			}

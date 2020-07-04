@@ -426,5 +426,87 @@ namespace Test.Instructions
 				Assert.AreEqual(negatives[i], cpu.Registers[regs1[i]].Data.Value);
 			}
 		}
+
+
+		[TestMethod]
+		public void TestAndBasic()
+		{
+			cpu.Registers[0].Data.AssignBitwise(0b001100110011);
+			cpu.Registers[1].Data.AssignBitwise(0b010101010101);
+			cpu.Registers[2].Data.AssignBitwise(0b000010101011);
+			cpu.Registers[3].Data.AssignBitwise(0b111110001111);
+
+			var insn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0001_1010 });
+			var insn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_1011_1010 });
+
+			insn1.Execute();
+			insn2.Execute();
+
+			Assert.AreEqual(0b000100010001, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(0b000010001011, cpu.Registers[2].Data.Value);
+		}
+
+
+		[TestMethod]
+		public void TestOrBasic()
+		{
+			cpu.Registers[0].Data.AssignBitwise(0b001100110011);
+			cpu.Registers[1].Data.AssignBitwise(0b010101010101);
+			cpu.Registers[2].Data.AssignBitwise(0b000010101011);
+			cpu.Registers[3].Data.AssignBitwise(0b111110001111);
+
+			var insn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0001_1011 });
+			var insn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_1011_1011 });
+
+			insn1.Execute();
+			insn2.Execute();
+
+			Assert.AreEqual(0b011101110111, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(0b111110101111, cpu.Registers[2].Data.Value);
+		}
+
+
+		[TestMethod]
+		public void TestXorBasic()
+		{
+			cpu.Registers[0].Data.AssignBitwise(0b001100110011);
+			cpu.Registers[1].Data.AssignBitwise(0b010101010101);
+			cpu.Registers[2].Data.AssignBitwise(0b000010101011);
+			cpu.Registers[3].Data.AssignBitwise(0b111110001111);
+
+			var insn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0001_1100 });
+			var insn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_1011_1100 });
+
+			insn1.Execute();
+			insn2.Execute();
+
+			Assert.AreEqual(0b011001100110, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(0b111100100100, cpu.Registers[2].Data.Value);
+		}
+
+
+		[TestMethod]
+		public void TestNotBasic()
+		{
+			cpu.Registers[0].Data.AssignBitwise(0b001100110011);
+			cpu.Registers[1].Data.AssignBitwise(0b010101010101);
+			cpu.Registers[2].Data.AssignBitwise(0b000010101011);
+			cpu.Registers[3].Data.AssignBitwise(0b111110001111);
+
+			var insn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0000_1101 });
+			var insn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0001_1101 });
+			var insn3 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0010_1101 });
+			var insn4 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0011_1101 });
+
+			insn1.Execute();
+			insn2.Execute();
+			insn3.Execute();
+			insn4.Execute();
+
+			Assert.AreEqual(0b110011001100, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(0b101010101010, cpu.Registers[1].Data.Value);
+			Assert.AreEqual(0b111101010100, cpu.Registers[2].Data.Value);
+			Assert.AreEqual(0b000001110000, cpu.Registers[3].Data.Value);
+		}
 	}
 }
