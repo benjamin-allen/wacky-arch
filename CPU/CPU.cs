@@ -6,6 +6,7 @@ namespace CPU
 	public class CPU
 	{
 		public Register[] Registers;
+		public readonly Register Const;
 
 		public CPU()
 		{
@@ -16,6 +17,8 @@ namespace CPU
 				new Register("R2"),
 				new Register("CONST"),
 			};
+
+			Const = Registers[3];
 		}
 	}
 }

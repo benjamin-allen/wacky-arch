@@ -22,9 +22,9 @@ The CPU also contains a Program Counter register to fetch instructions from.
 | | Rotate Left         | ROTL      | 0010 0-xx vvvv  | X = X << V               | New bits take the value of the off-shifted bit                                                               |
 | | Rotate Right        | ROTR      | 0010 1-xx vvvv  | X = X >> V               | New bits take the value of the off-shifted bit                                                               |
 | |                     |           |                 |                          |                                                                                                              |
-| | Move Register       | MOV       | 0011 xxyy 0000  | X = Y                    |                                                                                                              |
-| | Swap Register       | SWP       | 0011 xxyy 0001  | X = Y; Y = X             |                                                                                                              |
-| | Compare             | CMP       | 0011 xxyy 0010  | CONST = {1, 0, -1}       | 1 if X > Y, 0 if X = Y, -1 if X < Y                                                                          |
+|x| Move Register       | MOV       | 0011 xxyy 0000  | X = Y                    |                                                                                                              |
+|x| Swap Register       | SWP       | 0011 xxyy 0001  | X = Y; Y = X             |                                                                                                              |
+|x| Compare             | CMP       | 0011 xxyy 0010  | CONST = {1, 0, -1}       | 1 if X > Y, 0 if X = Y, -1 if X < Y                                                                          |
 | |                     |           |                 |                          |                                                                                                              |
 | | Read Port           | READ      | 0100 0-xx pppp  | X = P                    | Where P is a port connected to X. If P does not exist, returns 0                                             |
 | | Write Port          | WRITE     | 0100 1-xx pppp  | X = P                    | Where P is a port connected to X.                                                                            |

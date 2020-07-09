@@ -350,6 +350,10 @@ namespace Test.Instructions
 			{
 				numbers[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
 				moduli[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				while(moduli[i] == 0)
+				{
+					moduli[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				}
 				regs1[i] = r.Next(0, 4);
 				regs2[i] = r.Next(0, 4);
 				if (regs2[i] == regs1[i])
