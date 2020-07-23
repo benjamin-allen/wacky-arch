@@ -5,8 +5,11 @@ namespace CPU
 {
 	public class CPU
 	{
+		public Pipe[] PipeReferences;
 		public Register[] Registers;
 		public readonly Register Const;
+		public bool IncrementPC;
+		public Word PC;
 
 		public CPU()
 		{
@@ -19,6 +22,11 @@ namespace CPU
 			};
 
 			Const = Registers[3];
+		}
+
+		public CPU(Pipe[] pipes) : base()
+		{
+			PipeReferences = pipes;
 		}
 	}
 }

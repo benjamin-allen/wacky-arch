@@ -47,6 +47,8 @@ namespace CPU.Instructions
 						Cpu.Const.Data.Value = 0;
 					}
 					break;
+				default:
+					throw new InvalidOperationException("Invalid FuncCode!");
 			}
 		}
 	}
