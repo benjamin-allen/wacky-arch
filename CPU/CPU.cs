@@ -9,7 +9,8 @@ namespace CPU
 		public Register[] Registers;
 		public readonly Register Const;
 		public bool IncrementPC;
-		public Word PC;
+
+		private Word PC;
 
 		public CPU()
 		{
@@ -20,13 +21,30 @@ namespace CPU
 				new Register("R2"),
 				new Register("CONST"),
 			};
-
+			PC = new Word();
 			Const = Registers[3];
 		}
 
 		public CPU(Pipe[] pipes) : base()
 		{
 			PipeReferences = pipes;
+		}
+
+		public void SetPCValue(int value)
+		{
+			value = Math.Max(0, Math.Min(value, Word.Max));
+			PC.Value = value;
+		}
+
+		public void OffsetPCValue(int value)
+		{
+			PC.Value += value;
+			PC.Value = Math.Max(0, Math.Min(PC.Value, Word.Max));
+		}
+
+		public int GetPCValue()
+		{
+			return PC.Value;
 		}
 	}
 }

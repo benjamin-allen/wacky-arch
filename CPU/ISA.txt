@@ -29,11 +29,11 @@ The CPU also contains a Program Counter register to fetch instructions from.
 | | Read Port           | READ      | 0100 0-xx pppp  | X = P                    | Where P is a port connected to X. If P does not exist, returns 0                                             |
 | | Write Port          | WRITE     | 0100 1-xx pppp  | X = P                    | Where P is a port connected to X.                                                                            |
 | |                     |           |                 |                          |                                                                                                              |
-| | Jump                | JMP       | 0101 vvvv vvvv  | PC = PC + V              | Jumps to PC + V                                                                                              |
-| | Jump If Zero        | JEZ       | 0110 vvvv vvvv  | PC = PC + V              | Jumps to PC + V if CONST = 0                                                                                 |
-| | Jump If Greater     | JGZ       | 0111 vvvv vvvv  | PC = PC + V              | Jumps to PC + V if CONST > 0                                                                                 |
-| | Jump If Lesser      | JLZ       | 1000 vvvv vvvv  | PC = PC + V              | Jumps to PC + V if CONST < 0                                                                                 |
-| | Jump Address        | JA        | 1001 --xx vvvv  | PC = X + V               | Jumps to X + V                                                                                               |
+|x| Jump                | JMP       | 0101 vvvv vvvv  | PC = PC + V              | Jumps to PC + V                                                                                              |
+|x| Jump If Zero        | JEZ       | 0110 vvvv vvvv  | PC = PC + V              | Jumps to PC + V if CONST = 0                                                                                 |
+|x| Jump If Greater     | JGZ       | 0111 vvvv vvvv  | PC = PC + V              | Jumps to PC + V if CONST > 0                                                                                 |
+|x| Jump If Lesser      | JLZ       | 1000 vvvv vvvv  | PC = PC + V              | Jumps to PC + V if CONST < 0                                                                                 |
+|x| Jump Address        | JA        | 1001 ---- --xx  | PC = X + V               | Jumps to X + V                                                                                               |
 | |                     |           |                 |                          |                                                                                                              |
 | | Add Constant        | ADDC      | 1010 vvvv vvvv  | CONST = CONST + V        | V is assumed to be unsigned                                                                                  |
 | | Sub Constant        | SUBC      | 1011 vvvv vvvv  | CONST = CONST - V        | V is assumed to be unsigned                                                                                  |
