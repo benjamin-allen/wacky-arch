@@ -35,10 +35,10 @@ The CPU also contains a Program Counter register to fetch instructions from.
 |x| Jump If Lesser      | JLZ       | 1000 vvvv vvvv  | PC = PC + V              | Jumps to PC + V if CONST < 0                                                                                 |
 |x| Jump Address        | JA        | 1001 ---- --xx  | PC = X + V               | Jumps to X + V                                                                                               |
 | |                     |           |                 |                          |                                                                                                              |
-| | Add Constant        | ADDC      | 1010 vvvv vvvv  | CONST = CONST + V        | V is assumed to be unsigned                                                                                  |
-| | Sub Constant        | SUBC      | 1011 vvvv vvvv  | CONST = CONST - V        | V is assumed to be unsigned                                                                                  |
-| | Mod Constant        | MODC      | 1100 vvvv vvvv  | CONST = CONST % V        | V is assumed to be unsigned                                                                                  |
-| | AND Constant        | ANDC      | 1101 vvvv vvvv  | CONST = CONST & V        | V's upper bit is extended                                                                                    |
-| | OR Constant         | ORC       | 1110 vvvv vvvv  | CONST = CONST | V        | V's upper bit is extended                                                                                    |
-| | Move Constant       | MOVC      | 1111 vvvv vvvv  | CONST = V                |                                                                                                              |
+|x| Add Constant        | ADDC      | 1010 vvvv vvvv  | CONST = CONST + V        | V is assumed to be unsigned                                                                                  |
+|x| Sub Constant        | SUBC      | 1011 vvvv vvvv  | CONST = CONST - V        | V is assumed to be unsigned                                                                                  |
+|x| Mod Constant        | MODC      | 1100 vvvv vvvv  | CONST = CONST % V        | V is assumed to be unsigned                                                                                  |
+|x| AND Constant        | ANDC      | 1101 vvvv vvvv  | CONST = CONST & V        | V's upper bit is extended                                                                                    |
+|x| OR Constant         | ORC       | 1110 vvvv vvvv  | CONST = CONST | V        | V's upper bit is extended                                                                                    |
+|x| Move Constant       | MOVC      | 1111 vvvv vvvv  | CONST = V                |                                                                                                              |
 +-+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+

@@ -291,6 +291,10 @@ namespace Test.Instructions
 			{
 				dividends[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
 				divisors[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				while(divisors[i] == 0)
+				{
+					divisors[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
+				}
 				regs1[i] = r.Next(0, 4);
 				regs2[i] = r.Next(0, 4);
 				if (regs2[i] == regs1[i])
