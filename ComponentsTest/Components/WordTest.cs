@@ -2,6 +2,7 @@ using Components;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Diagnostics;
+using static Utilities.Utilities;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 
@@ -35,9 +36,9 @@ namespace Test.Components
 				int x = r.Next(Word.Max + 1, int.MaxValue);
 				int y = r.Next(int.MinValue, Word.Min - 1);
 				word.Value = x;
-				Assert.AreEqual(Word.Max, word.Value);
+				Assert.AreEqual(SignExtend(x, Word.Size - 1), word.Value);
 				word.Value = y;
-				Assert.AreEqual(Word.Min, word.Value);
+				Assert.AreEqual(SignExtend(y, Word.Size - 1), word.Value);
 			}
 		}
 
@@ -49,12 +50,12 @@ namespace Test.Components
 			word.Value = Word.Min;
 			Assert.AreEqual(Word.Min, word.Value);
 			word.Value = Word.Min - 1;
-			Assert.AreEqual(Word.Min, word.Value);
+			Assert.AreEqual(Word.Max, word.Value);
 
 			word.Value = Word.Max;
 			Assert.AreEqual(Word.Max, word.Value);
 			word.Value = Word.Max + 1;
-			Assert.AreEqual(Word.Max, word.Value);
+			Assert.AreEqual(Word.Min, word.Value);
 		}
 
 		[TestMethod]

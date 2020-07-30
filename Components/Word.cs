@@ -19,20 +19,7 @@ namespace Components
 		public int Value
 		{
 			get { return _Value; }
-			set { _Value = Bound(value); }
-		}
-
-		private int Bound(int value)
-		{
-			if(value > Max)
-			{
-				return Max;
-			}
-			else if(value < Min)
-			{
-				return Min;
-			}
-			return value;
+			set { _Value = Utilities.Utilities.SignExtend(value, Size - 1); }
 		}
 
 		public int AssignBitwise(int value)
@@ -40,6 +27,11 @@ namespace Components
 			int term = value & ((1 << Size) - 1);
 			_Value = term;
 			return term;
+		}
+
+		public int ReadAsUnsigned()
+		{
+			return _Value & ((1 << Size) - 1);
 		}
 
 		public string ToBin()

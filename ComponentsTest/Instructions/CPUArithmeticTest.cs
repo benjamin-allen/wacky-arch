@@ -2,6 +2,7 @@
 using CPU.Instructions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using static Utilities.Utilities;
 using System.Collections.Generic;
 using System.Reflection.PortableExecutable;
 using System.Text;
@@ -53,8 +54,8 @@ namespace Test.Instructions
 
 			insn1.Execute();
 			insn2.Execute();
-			Assert.AreEqual(Word.Max, cpu.Registers[0].Data.Value);
-			Assert.AreEqual(Word.Min, cpu.Registers[2].Data.Value);
+			Assert.AreEqual(Word.Min + 4, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(Word.Max - 4, cpu.Registers[2].Data.Value);
 		}
 
 
@@ -120,17 +121,17 @@ namespace Test.Instructions
 		public void TestSubEdgeCases()
 		{
 			cpu.Registers[0].Data.Value = Word.Max;
-			cpu.Registers[1].Data.Value = -1;
+			cpu.Registers[1].Data.Value = -2;
 			cpu.Registers[2].Data.Value = Word.Min;
-			cpu.Registers[3].Data.Value = 1;
+			cpu.Registers[3].Data.Value = 2;
 
 			var subInsn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0001_0001 });
 			var subInsn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_1011_0001 });
 			subInsn1.Execute();
 			subInsn2.Execute();
 
-			Assert.AreEqual(Word.Max, cpu.Registers[0].Data.Value);
-			Assert.AreEqual(Word.Min, cpu.Registers[2].Data.Value);
+			Assert.AreEqual(Word.Min + 1, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(Word.Max - 1, cpu.Registers[2].Data.Value);
 		}
 
 
@@ -206,11 +207,11 @@ namespace Test.Instructions
 			var insn2 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_1001_0010 });
 
 			insn1.Execute();
-			Assert.AreEqual(Word.Max, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(0, cpu.Registers[0].Data.Value);
 			Assert.AreEqual(4, cpu.Registers[1].Data.Value);
 
 			insn2.Execute();
-			Assert.AreEqual(Word.Min, cpu.Registers[2].Data.Value);
+			Assert.AreEqual(0, cpu.Registers[2].Data.Value);
 			Assert.AreEqual(4, cpu.Registers[1].Data.Value);
 		}
 
@@ -235,7 +236,7 @@ namespace Test.Instructions
 				{
 					regs2[i] = (regs2[i] + 1) % 4;
 				}
-				products[i] = (factors1[i] * factors2[i] > Word.Max) ? Word.Max : (factors1[i] * factors2[i] < Word.Min ? Word.Min : factors1[i] * factors2[i]);
+				products[i] = SignExtend(factors1[i] * factors2[i], Word.Size - 1);
 			}
 
 			for (int i = 0; i < n; i++)
@@ -397,10 +398,10 @@ namespace Test.Instructions
 			insn3.Execute();
 			insn4.Execute();
 
-			Assert.AreEqual(0, cpu.Registers[0].Data.Value);
+			Assert.AreEqual(0, cpu.Registers[0].Data.Value); // Edge case: Negating 0 is 0
 			Assert.AreEqual(-1, cpu.Registers[1].Data.Value);
 			Assert.AreEqual(Word.Min + 1, cpu.Registers[2].Data.Value);
-			Assert.AreEqual(Word.Max, cpu.Registers[3].Data.Value);
+			Assert.AreEqual(Word.Min, cpu.Registers[3].Data.Value); // Edge case: Negating -2048 is 2048 which wraps to become -2048
 		}
 
 

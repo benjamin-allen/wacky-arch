@@ -39,7 +39,7 @@ namespace Test.Instructions
 			cpu.SetPCValue(Word.Max - 1);
 			jmp = new JumpInstruction(cpu, new Word { Value = 0b0101_00001000 });
 			jmp.Execute();
-			Assert.AreEqual(Word.Max, cpu.GetPCValue());
+			Assert.AreEqual(0, cpu.GetPCValue());
 		}
 
 		[TestMethod]
@@ -63,7 +63,7 @@ namespace Test.Instructions
 
 			cpu.SetPCValue(Word.Max);
 			jez.Execute();
-			Assert.AreEqual(Word.Max, cpu.GetPCValue());
+			Assert.AreEqual(0, cpu.GetPCValue());
 
 			cpu.SetPCValue(Word.Min);
 			Assert.AreEqual(0, cpu.GetPCValue());
