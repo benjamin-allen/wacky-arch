@@ -17,10 +17,11 @@ The CPU also contains a Program Counter register to fetch instructions from.
 |x| XOR Register        | XOR       | 0000 xxyy 1100  | X = X ^ Y                |                                                                                                              |
 |x| NOT Register        | NOT       | 0000 --xx 1101  | X = !X                   |                                                                                                              |
 | |                     |           |                 |                          |                                                                                                              |
-| | Shift Left          | SHL       | 0001 0-xx vvvv  | X = X << V               | New bits are all 0                                                                                           |
-| | Shift Right         | SHR       | 0001 1-xx vvvv  | X = X >> V               | New bits are all 0                                                                                           |
-| | Rotate Left         | ROTL      | 0010 0-xx vvvv  | X = X << V               | New bits take the value of the off-shifted bit                                                               |
-| | Rotate Right        | ROTR      | 0010 1-xx vvvv  | X = X >> V               | New bits take the value of the off-shifted bit                                                               |
+|x| Shift Left          | SHL       | 0001 0-xx vvvv  | X = X << V               | New bits are all 0                                                                                           |
+|x| Shift Right         | SHR       | 0001 10xx vvvv  | X = X >> V               | New bits are all 0                                                                                           |
+|x| Shift Right Arith   | SHRA      | 0001 11xx vvvv  | X = X >> V               | New bits are all upper bit                                                                                   |
+|x| Rotate Left         | ROTL      | 0010 0-xx vvvv  | X = X << V               | New bits take the value of the off-shifted bit                                                               |
+|x| Rotate Right        | ROTR      | 0010 1-xx vvvv  | X = X >> V               | New bits take the value of the off-shifted bit                                                               |
 | |                     |           |                 |                          |                                                                                                              |
 |x| Move Register       | MOV       | 0011 xxyy 0000  | X = Y                    |                                                                                                              |
 |x| Swap Register       | SWP       | 0011 xxyy 0001  | X = Y; Y = X             |                                                                                                              |
