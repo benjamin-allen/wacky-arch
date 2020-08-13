@@ -24,31 +24,33 @@ namespace CPU.Instructions
 				case 0b0101:
 					// Jump
 					Cpu.OffsetPCValue(Offset);
+					Cpu.IncrementPC = false; // Don't increment the PC until the end next cycle
 					break;
 				case 0b0110:
 					// Jump if Eq0
 					if(Cpu.Const.Data.Value == 0)
 					{
-						Cpu.OffsetPCValue(Offset);
+						goto case 0b0101;
 					}
 					break;
 				case 0b0111:
 					// Jump if Gr0
 					if(Cpu.Const.Data.Value > 0)
 					{
-						Cpu.OffsetPCValue(Offset);
+						goto case 0b0101;
 					}
 					break;
 				case 0b1000:
 					// Jump if Le0
 					if(Cpu.Const.Data.Value < 0)
 					{
-						Cpu.OffsetPCValue(Offset);
+						goto case 0b0101;
 					}
 					break;
 				case 0b1001:
 					// Jump address
 					Cpu.SetPCValue(Cpu.Registers[X].Data.Value);
+					Cpu.IncrementPC = false;
 					break;
 				default:
 					throw new InvalidOperationException("Invalid Opcode!");

@@ -46,5 +46,16 @@ namespace CPU
 		{
 			return PC.Value;
 		}
+
+		public void Cycle()
+		{
+			// Load the word from memory and create an instruction.
+
+			if(IncrementPC)
+			{
+				PC.Value += 1;
+			}
+			IncrementPC = true;
+		}
 	}
 }
