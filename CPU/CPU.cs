@@ -25,7 +25,7 @@ namespace CPU
 			Const = Registers[3];
 		}
 
-		public CPU(Pipe[] pipes) : base()
+		public CPU(Pipe[] pipes) : this()
 		{
 			PipeReferences = pipes;
 		}

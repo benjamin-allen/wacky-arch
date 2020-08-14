@@ -50,7 +50,7 @@ namespace CPU.Instructions
 				}
 				catch (IndexOutOfRangeException e)
 				{
-					Cpu.IncrementPC = false;
+					Cpu.IncrementPC = true;
 				}
 			}
 		}
