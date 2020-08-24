@@ -20,7 +20,10 @@ namespace Test.Instructions
 			input = new Pipe();
 			output = new Pipe();
 
-			cpu = new CPU.CPU(new Pipe[] { input, output });
+			Port port0 = new Port(input, "INPUT");
+			Port port1 = new Port(output, "OUTPUT");
+
+			cpu = new CPU.CPU(new Port[] { port0, port1 });
 		}
 
 		[TestMethod]

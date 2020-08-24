@@ -5,7 +5,7 @@ namespace CPU
 {
 	public class CPU
 	{
-		public Pipe[] PipeReferences;
+		public Port[] Ports;
 		public Register[] Registers;
 		public readonly Register Const;
 		public bool IncrementPC;
@@ -25,9 +25,9 @@ namespace CPU
 			Const = Registers[3];
 		}
 
-		public CPU(Pipe[] pipes) : this()
+		public CPU(Port[] ports) : this()
 		{
-			PipeReferences = pipes;
+			Ports = ports;
 		}
 
 		public void SetPCValue(int value)
@@ -47,13 +47,15 @@ namespace CPU
 			return PC.Value;
 		}
 
-		public void Cycle()
+		public virtual void Cycle()
 		{
-			// Load the word from memory and create an instruction.
-
 			if(IncrementPC)
 			{
 				PC.Value += 1;
+			}
+			if(PC.Value < 0)
+			{
+				PC.Value = 0;
 			}
 			IncrementPC = true;
 		}

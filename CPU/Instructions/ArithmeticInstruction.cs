@@ -71,6 +71,8 @@ namespace CPU.Instructions
 				case 0xD:
 					Cpu.Registers[Y].Data.AssignBitwise(~Cpu.Registers[Y].Data.Value);
 					break;
+				case 0xF:
+					break; // No-op
 				default:
 					throw new InvalidOperationException("Invalid FuncCode!");
 			}

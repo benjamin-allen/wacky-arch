@@ -26,7 +26,7 @@ namespace CPU.Instructions
 				try
 				{
 					bool readDidSucceed;
-					Pipe pipe = Cpu.PipeReferences[PortNumber];
+					Pipe pipe = Cpu.Ports[PortNumber].Pipe;
 					Word word = pipe.Read(out readDidSucceed);
 					if(readDidSucceed)
 					{
@@ -44,7 +44,7 @@ namespace CPU.Instructions
 				try
 				{
 					bool writeDidSucceed;
-					Pipe pipe = Cpu.PipeReferences[PortNumber];
+					Pipe pipe = Cpu.Ports[PortNumber].Pipe;
 					writeDidSucceed = pipe.Write(Cpu.Registers[X].Data.Value);
 					Cpu.IncrementPC = writeDidSucceed;
 				}
