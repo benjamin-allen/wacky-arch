@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 
-namespace Assembler
+namespace CPU
 {
 	public static class Assembler
 	{
@@ -17,7 +17,7 @@ namespace Assembler
 		/// </summary>
 		/// <param name="assemblyText"></param>
 		/// <returns></returns>
-		public static List<Word> Assemble(CPU.CPU cpu, string assemblyText)
+		public static List<Word> Assemble(CPU cpu, string assemblyText)
 		{
 			var lines = CleanText(assemblyText);
 
@@ -32,7 +32,7 @@ namespace Assembler
 			return normalized.Split(Environment.NewLine).Select(s => s.Trim()).ToList();
 		}
 
-		private static List<Word> AssembleText(CPU.CPU cpu, List<string> assemblyLines)
+		private static List<Word> AssembleText(CPU cpu, List<string> assemblyLines)
 		{
 			List<Word> words = new List<Word>();
 			Dictionary<string, int> labelAddresses = new Dictionary<string, int>();
@@ -268,7 +268,7 @@ namespace Assembler
 			return new Word { Value = wordValue };
 		}
 
-		private static Word AssemblePType(List<string> tokens, int i, CPU.CPU cpu)
+		private static Word AssemblePType(List<string> tokens, int i, CPU cpu)
 		{
 			ValidatePType(tokens, i, cpu);
 
@@ -353,7 +353,7 @@ namespace Assembler
 			}
 		}
 
-		private static void ValidatePType(List<string> tokens, int i, CPU.CPU cpu)
+		private static void ValidatePType(List<string> tokens, int i, CPU cpu)
 		{
 			string line = string.Join(" ", tokens);
 			tokens.ValidateTokenArraySize(i, 3, "MNEMONIC RX PORT");

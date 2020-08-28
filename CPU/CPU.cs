@@ -59,5 +59,23 @@ namespace CPU
 			}
 			IncrementPC = true;
 		}
+
+		public virtual void Reset()
+		{
+			// Reset registers
+			Registers[0].Data.Value = 0;
+			Registers[1].Data.Value = 0;
+			Registers[2].Data.Value = 0;
+			Registers[3].Data.Value = 0;
+
+			// Reset PC
+			PC.Value = 0;
+
+			// Reset Ports
+			foreach(Port port in Ports)
+			{
+				port.Pipe.Status = PipeStatus.Idle;
+			}
+		}
 	}
 }
