@@ -2,7 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <OutputType>WinExe</OutputType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
+    <PackageReference Include="SadConsole" Version="8.99.3" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CPU\CPU.csproj" />
