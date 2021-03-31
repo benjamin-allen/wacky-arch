@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using SadConsole;
 using Console = SadConsole.Console;
 using System;
@@ -11,13 +12,23 @@ namespace Emulator.UIComponents
 	public class CodeBox : ScrollingConsole
 	{
 		private int width, height;
-		private string[] text; 
-		public string[] Text { get; }
+		private List<string> text; 
+		public List<string> Text { get; }
 
-		private TimeSpan blinkTime;
+		private int blinkTimeMs;
+		private int timeSinceBlinkSwitchMs;
 		private ColoredGlyph cursorGlyph;
-		public Point cursor;
-		
+		private bool showCursor;
+		private Point cursor;
+
+		private static List<Keys> typeableKeys = new List<Keys>()
+		{ Keys.A, Keys.B, Keys.C, Keys.D, Keys.E, Keys.F, Keys.G, Keys.H, Keys.I,
+		  Keys.J, Keys.K, Keys.L, Keys.M, Keys.N, Keys.O, Keys.P, Keys.Q, Keys.R,
+		  Keys.S, Keys.T, Keys.U, Keys.V, Keys.W, Keys.X, Keys.Y, Keys.Z,
+		  Keys.D0, Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9,
+		  Keys.NumPad0, Keys.NumPad1, Keys.NumPad2, Keys.NumPad3, Keys.NumPad4,
+		  Keys.NumPad5, Keys.NumPad6, Keys.NumPad7, Keys.NumPad8, Keys.NumPad9,
+		  Keys.Space };
 
 		public CodeBox(int width, int height) : base(width, height)
 		{
@@ -26,21 +37,179 @@ namespace Emulator.UIComponents
 
 			cursor = new Point(0, 0);
 			cursorGlyph = new ColoredGlyph(0, Color.Green, Color.Green);
-			blinkTime = new TimeSpan(0, 0, 0, 0, 500);
+			showCursor = true;
+			blinkTimeMs = 500;
+			timeSinceBlinkSwitchMs = 0;
 
-			text = new string[] { "Hello, world!", "Test text!" };
+			text = new List<string>() { "" };
 		}
 
 		public override void Draw(TimeSpan timeElapsed)
 		{
 			base.Draw(timeElapsed);
+			Clear();
+			timeSinceBlinkSwitchMs += (int)timeElapsed.TotalMilliseconds;
 
-			for(int i = 0; i < text.Length; i++)
+			for (int i = 0; i < text.Count; i++)
 			{
-				Print(0, i, text[i], Color.Red, Color.Black);
+				Print(0, i, text[i], Color.White, Color.Black);
 			}
 
-			Print(cursor.X, cursor.Y, cursorGlyph);
+			if (timeSinceBlinkSwitchMs >= blinkTimeMs)
+			{
+				timeSinceBlinkSwitchMs %= blinkTimeMs;
+				showCursor = !showCursor;
+			}
+			if (showCursor)
+			{ 
+				Print(cursor.X, cursor.Y, cursorGlyph);
+			}
+		}
+
+		public override bool ProcessKeyboard(SadConsole.Input.Keyboard info)
+		{
+			if (MoveCursor(info) || TypeCharacter(info))
+			{
+				showCursor = true;
+				timeSinceBlinkSwitchMs = 0;
+				return true;
+			}
+
+			return false;
+		}
+
+		private bool MoveCursor(SadConsole.Input.Keyboard info)
+		{
+			if (info.IsKeyPressed(Keys.Up))
+			{
+				if (cursor.Y == 0)
+					cursor.X = 0;
+				if (cursor.Y > 0)
+					cursor.Y -= 1;
+				if (cursor.X > text[cursor.Y].Length)
+					cursor.X = text[cursor.Y].Length;
+				return true;
+			}
+			if (info.IsKeyPressed(Keys.Down))
+			{
+				if (cursor.Y == text.Count - 1)
+					cursor.X = text[cursor.Y].Length;
+				if (cursor.Y < text.Count - 1)
+					cursor.Y += 1;
+				if (cursor.X > text[cursor.Y].Length)
+					cursor.X = text[cursor.Y].Length;
+				return true;
+			}
+			if (info.IsKeyPressed(Keys.Left))
+			{
+				if (cursor.X > 0)
+					cursor.X -= 1;
+				return true;
+			}
+			if (info.IsKeyPressed(Keys.Right))
+			{
+				if (cursor.X < text[cursor.Y].Length)
+					cursor.X += 1;
+				return true;
+			}
+			if (info.IsKeyPressed(Keys.Home))
+			{
+				cursor.X = 0;
+				return true;
+			}
+			if (info.IsKeyPressed(Keys.End))
+			{
+				cursor.X = text[cursor.Y].Length;
+				return true;
+			}
+
+
+			return false;
+		}
+	
+		private bool TypeCharacter(SadConsole.Input.Keyboard info)
+		{
+			if (info.IsKeyDown(Keys.LeftShift) || info.IsKeyDown(Keys.RightShift))
+			{
+				if (info.IsKeyPressed(Keys.D3))
+				{
+					text[cursor.Y] = text[cursor.Y].Insert(cursor.X, "#");
+					cursor.X += 1;
+					return true;
+				}
+				if (info.IsKeyPressed(Keys.D2))
+				{
+					text[cursor.Y] = text[cursor.Y].Insert(cursor.X, "@");
+					cursor.X += 1;
+					return true;
+				}
+			}
+
+			foreach (Keys key in typeableKeys)
+			{
+				if (info.IsKeyPressed(key))
+				{
+					text[cursor.Y] = text[cursor.Y].Insert(cursor.X, ((char)key).ToString().ToUpper());
+					cursor.X += 1;
+					return true;
+				}
+			}
+
+			if (info.IsKeyPressed(Keys.Enter))
+			{
+				string fullLine = text[cursor.Y];
+				text[cursor.Y] = fullLine.Substring(0, cursor.X);
+				text.Insert(cursor.Y + 1, fullLine.Substring(cursor.X));
+				cursor.Y += 1;
+				cursor.X = 0;
+				return true;
+			}
+
+			if (info.IsKeyPressed(Keys.Back))
+			{
+				if (cursor.X == 0 && cursor.Y == 0)
+					return false;
+				if (cursor.X == 0)
+				{
+					cursor.X = text[cursor.Y - 1].Length;
+					text[cursor.Y - 1] = text[cursor.Y - 1] + text[cursor.Y];
+					text.RemoveAt(cursor.Y);
+					cursor.Y -= 1;
+					return true;
+				}
+				if (cursor.X < text[cursor.Y].Length)
+				{
+					text[cursor.Y] = text[cursor.Y].Substring(0, cursor.X - 1) + text[cursor.Y].Substring(cursor.X);
+					cursor.X -= 1;
+					return true;
+				}
+				else
+				{
+					text[cursor.Y] = text[cursor.Y].Substring(0, cursor.X - 1);
+					cursor.X -= 1;
+					return true;
+				}
+			}
+
+			if(info.IsKeyPressed(Keys.Delete))
+			{
+				if (cursor.X == 0 && cursor.Y == text.Count - 1)
+					return false;
+				if (cursor.X == text[cursor.Y].Length)
+				{
+					text[cursor.Y] = text[cursor.Y] + text[cursor.Y + 1];
+					text.RemoveAt(cursor.Y + 1);
+					return true;
+				}
+				else
+				{
+					text[cursor.Y] = text[cursor.Y].Substring(0, cursor.X) + text[cursor.Y].Substring(cursor.X + 1);
+					return true;
+				}
+			}
+
+			return false;
+
 		}
 	}
 }
