@@ -27,7 +27,7 @@ namespace CPU.CPUs
 		public override void Cycle()
 		{
 			// Is our PC within executable program? If so, execute the next instruction.
-			if(GetPCValue() < ProgramBinary.Count)
+			if (GetPCValue() < ProgramBinary.Count)
 			{
 				Instruction insn = InstructionFactory.CreateInstruction(this, ProgramBinary[GetPCValue()]);
 				insn.Execute();
@@ -35,7 +35,11 @@ namespace CPU.CPUs
 				base.Cycle();
 			}
 
-			// otherwise, do nothing.
+			// otherwise, do nothing. Set the halt flag
+			else
+			{
+				IsHalted = true;
+			}
 		}
 	}
 }

@@ -9,6 +9,7 @@ namespace CPU
 		public Register[] Registers;
 		public readonly Register Const;
 		public bool IncrementPC;
+		public bool IsHalted;
 
 		private Word PC;
 
@@ -76,6 +77,9 @@ namespace CPU
 			{
 				port.Pipe.Status = PipeStatus.Idle;
 			}
+
+			// Unset IsHalted
+			IsHalted = false;
 		}
 	}
 }
