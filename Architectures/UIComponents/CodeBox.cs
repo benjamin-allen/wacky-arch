@@ -129,18 +129,17 @@ namespace Emulator.UIComponents
 	
 		private bool TypeCharacter(SadConsole.Input.Keyboard info)
 		{
+			// need special handling for 
 			if (info.IsKeyDown(Keys.LeftShift) || info.IsKeyDown(Keys.RightShift))
 			{
 				if (info.IsKeyPressed(Keys.D3))
 				{
-					text[cursor.Y] = text[cursor.Y].Insert(cursor.X, "#");
-					cursor.X += 1;
+					insertCharacter("#");
 					return true;
 				}
 				if (info.IsKeyPressed(Keys.D2))
 				{
-					text[cursor.Y] = text[cursor.Y].Insert(cursor.X, "@");
-					cursor.X += 1;
+					insertCharacter("@");
 					return true;
 				}
 			}
@@ -149,20 +148,22 @@ namespace Emulator.UIComponents
 			{
 				if (info.IsKeyPressed(key))
 				{
-					text[cursor.Y] = text[cursor.Y].Insert(cursor.X, ((char)key).ToString().ToUpper());
-					cursor.X += 1;
+					insertCharacter(((char)key).ToString());
 					return true;
 				}
 			}
 
 			if (info.IsKeyPressed(Keys.Enter))
 			{
-				string fullLine = text[cursor.Y];
-				text[cursor.Y] = fullLine.Substring(0, cursor.X);
-				text.Insert(cursor.Y + 1, fullLine.Substring(cursor.X));
-				cursor.Y += 1;
-				cursor.X = 0;
-				return true;
+				if(cursor.Y < height-1)
+				{
+					string fullLine = text[cursor.Y];
+					text[cursor.Y] = fullLine.Substring(0, cursor.X);
+					text.Insert(cursor.Y + 1, fullLine.Substring(cursor.X));
+					cursor.Y += 1;
+					cursor.X = 0;
+					return true;
+				}
 			}
 
 			if (info.IsKeyPressed(Keys.Back))
@@ -210,6 +211,14 @@ namespace Emulator.UIComponents
 
 			return false;
 
+			void insertCharacter(string character)
+			{
+				if(cursor.X < width-1)
+				{
+					text[cursor.Y] = text[cursor.Y].Insert(cursor.X, character.ToUpper());
+					cursor.X += 1;
+				}
+			}
 		}
 	}
 }
