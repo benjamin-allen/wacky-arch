@@ -5,6 +5,9 @@ using SadConsole;
 using Microsoft.Xna.Framework;
 using Console = SadConsole.Console;
 using Emulator.UIComponents;
+using Emulator.Architectures;
+using SadConsole.Themes;
+using SadConsole.Controls;
 
 namespace Emulator
 {
@@ -19,7 +22,7 @@ namespace Emulator
 
 		public static void Main(string[] args)
 		{
-			SadConsole.Game.Create(120, 40);
+			SadConsole.Game.Create(80, 25);
 			SadConsole.Game.OnInitialize = Init;
 
 			SadConsole.Game.Instance.Run();
@@ -28,8 +31,11 @@ namespace Emulator
 
 		static void Init()
 		{
+			SadConsole.Themes.Library.Default.SetControlTheme(typeof(Button), new SadConsole.Themes.ButtonTheme());
+
 			//Global.CurrentScreen = new Architectures.AlphaArchitecture();
-			Global.CurrentScreen = new CodeBox(120, 40);
+			var aarch = new AlphaArchitecture();
+			Global.CurrentScreen = aarch;
 			Global.CurrentScreen.IsFocused = true;
 		}
 	}

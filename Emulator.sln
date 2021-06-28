@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "Shared\Utiliti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emulator", "Architectures\Emulator.csproj", "{19FBA04B-68A5-4BB9-B364-2FE58B48E5FA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SadConsole", "..\SadConsole\src\SadConsole\SadConsole.csproj", "{97D3B911-1CDC-495D-8346-B49B0C7F4F53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{19FBA04B-68A5-4BB9-B364-2FE58B48E5FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19FBA04B-68A5-4BB9-B364-2FE58B48E5FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19FBA04B-68A5-4BB9-B364-2FE58B48E5FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97D3B911-1CDC-495D-8346-B49B0C7F4F53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97D3B911-1CDC-495D-8346-B49B0C7F4F53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97D3B911-1CDC-495D-8346-B49B0C7F4F53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97D3B911-1CDC-495D-8346-B49B0C7F4F53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

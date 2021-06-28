@@ -13,7 +13,10 @@ namespace Emulator.UIComponents
 	{
 		private int width, height;
 		private List<string> text; 
-		public List<string> Text { get; }
+		public string Text 
+		{
+			get { return string.Join("\n", text); }
+		}
 
 		private int blinkTimeMs;
 		private int timeSinceBlinkSwitchMs;
@@ -155,7 +158,7 @@ namespace Emulator.UIComponents
 
 			if (info.IsKeyPressed(Keys.Enter))
 			{
-				if(cursor.Y < height-1)
+				if(text.Count < height-1)
 				{
 					string fullLine = text[cursor.Y];
 					text[cursor.Y] = fullLine.Substring(0, cursor.X);

@@ -7,10 +7,10 @@
 
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
-    <PackageReference Include="SadConsole" Version="8.99.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\SadConsole\src\SadConsole\SadConsole.csproj" />
     <ProjectReference Include="..\CPU\CPU.csproj" />
   </ItemGroup>
 
