@@ -9,10 +9,10 @@ namespace Emulator.UIComponents
 	public class CPUInfoBox : ScrollingConsole
 	{
 		private int width = 16;
-		private int height = 8;
+		private int height = 9;
 		private CPU.CPU cpu;
 
-		public CPUInfoBox(CPU.CPU cpu) : base(16, 8)
+		public CPUInfoBox(CPU.CPU cpu) : base(16, 9)
 		{
 			this.cpu = cpu;
 		}
@@ -28,6 +28,7 @@ namespace Emulator.UIComponents
 			Print(1, 4, $"R1 {String.Format("{0,5:####0}", cpu.Registers[1].Data.Value)} | {cpu.Registers[1].Data.Value & 0xFFF:X3}");
 			Print(1, 5, $"R2 {String.Format("{0,5:####0}", cpu.Registers[2].Data.Value)} | {cpu.Registers[2].Data.Value & 0xFFF:X3}");
 			Print(1, 6, $"C  {String.Format("{0,5:####0}", cpu.Registers[3].Data.Value)} | {cpu.Registers[3].Data.Value & 0xFFF:X3}");
+			Print(1, 7, $"CPU: {(cpu.IsHalted ? "HALTED" : "")}");
 		}
 	}
 }

@@ -219,7 +219,7 @@ namespace CPU
 			int diff = targetAddress - currentAddress;
 			if(diff > 127 || diff < -128)
 			{
-				throw new AssemblerException("Jump out of range. Label should be within 127 instructions of this jump.", i, string.Join(" ", tokens));
+				throw new AssemblerException("Jump out of range. Label should be within 127 instructions of this jump.", i, string.Join(" ", tokens), "Jump out of range");
 			}
 			wordValue = 0x0FF & Utilities.Utilities.SignExtend(diff, 7);
 
@@ -295,11 +295,11 @@ namespace CPU
 			tokens.ValidateTokenArraySize(i, 3, "MNEMONIC RX RY");
 			if (!Tokens.CheckTokenMatch(tokens[1], Tokens.RegisterTokens))
 			{
-				throw new AssemblerException($"{tokens[1]} is not a register name.", i, line);
+				throw new AssemblerException($"{tokens[1]} is not a register name.", i, line, $"Not a register: {tokens[1]}");
 			}
 			if (!Tokens.CheckTokenMatch(tokens[2], Tokens.RegisterTokens))
 			{
-				throw new AssemblerException($"{tokens[2]} is not a register name.", i, line);
+				throw new AssemblerException($"{tokens[2]} is not a register name.", i, line, $"Not a register: {tokens[2]}");
 			}
 		}
 
@@ -310,7 +310,7 @@ namespace CPU
 
 			if(!Tokens.CheckTokenMatch(tokens[1], Tokens.RegisterTokens))
 			{
-				throw new AssemblerException($"{tokens[1]} is not a register name.", i, line);
+				throw new AssemblerException($"{tokens[1]} is not a register name.", i, line, $"Not a register: {tokens[1]}");
 			}
 		}
 
@@ -320,7 +320,7 @@ namespace CPU
 			tokens.ValidateTokenArraySize(i, 2, "MNEMONIC VALUE");
 			if (Int32.TryParse(tokens[1], out _) == false)
 			{
-				throw new AssemblerException($"{tokens[2]} is not a numeric literal.", i, line);
+				throw new AssemblerException($"{tokens[1]} is not a numeric literal.", i, line, $"Not a number: {tokens[1]}");
 			}
 		}
 
@@ -335,7 +335,7 @@ namespace CPU
 			}
 			catch (KeyNotFoundException)
 			{
-				throw new AssemblerException($"Label \"{tokens[1]}\" not found.", i, line);
+				throw new AssemblerException($"Label \"{tokens[1]}\" not found.", i, line, $"{tokens[1]} not found");
 			}
 		}
 
@@ -345,11 +345,11 @@ namespace CPU
 			tokens.ValidateTokenArraySize(i, 3, "MNEMONIC RX VALUE");
 			if(!Tokens.CheckTokenMatch(tokens[1], Tokens.RegisterTokens))
 			{
-				throw new AssemblerException($"{tokens[1]} is not a register name.", i, line);
+				throw new AssemblerException($"{tokens[1]} is not a register name.", i, line, $"Not a register: {tokens[1]}");
 			}
 			if(Int32.TryParse(tokens[2], out _) == false)
 			{
-				throw new AssemblerException($"{tokens[2]} is not a numeric literal.", i, line);
+				throw new AssemblerException($"{tokens[2]} is not a numeric literal.", i, line, $"Not a number: {tokens[2]}");
 			}
 		}
 
@@ -359,14 +359,14 @@ namespace CPU
 			tokens.ValidateTokenArraySize(i, 3, "MNEMONIC RX PORT");
 			if(!Tokens.CheckTokenMatch(tokens[1], Tokens.RegisterTokens))
 			{
-				throw new AssemblerException($"{tokens[1]} is not a register name.", i, line);
+				throw new AssemblerException($"{tokens[1]} is not a register name.", i, line, $"Not a number: {tokens[2]}");
 			}
 
 			string portName = tokens[2].ToUpper();
 			int portIndex = cpu.Ports.ToList().FindIndex(p => p.Name == portName);
 			if(portIndex < 0 || portIndex > 15) 
 			{
-				throw new AssemblerException($"{portName} is not a port name.", i, line);
+				throw new AssemblerException($"{portName} is not a port name.", i, line, $"Not a port: {portName}");
 			}
 		}
 
@@ -392,11 +392,11 @@ namespace CPU
 			string line = string.Join(" ", tokens);
 			if(tokens.Count > size)
 			{
-				throw new AssemblerException($"Malformed instruction (Too many tokens). Did you mean {string.Join(" ", tokens.Take(size))}?", i, line);
+				throw new AssemblerException($"Malformed instruction (Too many tokens). Did you mean {string.Join(" ", tokens.Take(size))}?", i, line, $"Bad instruction. Did you mean {string.Join(" ", tokens.Take(size))}?");
 			}
 			if(tokens.Count < size)
 			{
-				throw new AssemblerException($"Malformed instruction (Too few tokens). Format should be {suggestedFormat}.", i, line);
+				throw new AssemblerException($"Malformed instruction (Too few tokens). Format should be {suggestedFormat}.", i, line, $"Bad instruction. Format is {suggestedFormat}");
 			}
 		}
 	}
