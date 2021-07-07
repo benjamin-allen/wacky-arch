@@ -3,6 +3,7 @@ using SadConsole;
 using SadConsole.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Emulator.UIComponents
@@ -11,6 +12,8 @@ namespace Emulator.UIComponents
 	{
 		private TextBox textBox;
 		private int gutterWidth;
+		private CPU.CPU cpu;
+		private ScrollingConsole statusConsole;
 
 		public string Status { get; set; }
 		public int ErrorLine = -1;
@@ -21,7 +24,7 @@ namespace Emulator.UIComponents
 		/// </summary>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		public CodeBox(int width, int height) : base(width, height)
+		public CodeBox(int width, int height, CPU.CPU cpu) : base(width, height)
 		{
 			gutterWidth = 3;
 			if (height - 2 >= Math.Pow(10, gutterWidth - 1)) 
@@ -32,6 +35,12 @@ namespace Emulator.UIComponents
 			textBox.Parent = this;
 
 			Status = "";
+
+			this.cpu = cpu;
+
+			statusConsole = new ScrollingConsole(width - 4, 2);
+			statusConsole.Position = new Point(1, Height - 3);
+			statusConsole.Parent = this;
 		}
 
 		public string Text
@@ -70,18 +79,17 @@ namespace Emulator.UIComponents
 			}
 
 			// Draw Status text
-			Cursor.Move(2, this.textBox.Height + 1).Print(Status);
+			statusConsole.Clear();
+			statusConsole.Cursor.Move(2, this.textBox.Height + 1).Print(Status);
 
-			// Disabled for now. I can't figure out a good way to make this work with labels and comments
-			/*
-			// Draw a pointer for the current instruction, if not halted
-			if (cpu.IsHalted == false)
+			// Draw a pointer for the next instruction instruction, if not halted
+			if (cpu.IsHalted == false && cpu.PcLineMap.Count > 0)
 			{
 				var pc = cpu.GetPCValue();
-				SetGlyph(Width - 1, pc + 1, 17);
-				SetGlyph(gutterWidth + 1, pc + 1, 16);
+				var lineIndex = cpu.PcLineMap.ContainsKey(pc) ? cpu.PcLineMap[pc] : cpu.PcLineMap.Max(kv => kv.Value) + 1;
+				SetGlyph(Width - 2, lineIndex + 1, 17);
+				SetGlyph(gutterWidth + 2, lineIndex + 1, 16);
 			}
-			*/
 		}
 
 		public override bool ProcessKeyboard(Keyboard info)

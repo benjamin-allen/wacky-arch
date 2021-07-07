@@ -8,7 +8,7 @@ namespace Components
 	/// <summary>
 	/// Memory is just a batch of words that can be accessed positionally
 	/// </summary>
-	public class Memory
+	public class Memory : ICyclable
 	{
 		public Word[] Words;
 		public Pipe Address;

@@ -13,6 +13,7 @@ namespace CPU.CPUs
 
 		private List<Word> ProgramBinary { get; set; }
 
+
 		public InterpreterCPU() : base() { }
 
 		public InterpreterCPU(Port[] ports) : base(ports) { }
@@ -21,7 +22,8 @@ namespace CPU.CPUs
 		{
 			Reset();
 			ProgramText = programText;
-			ProgramBinary = Assembler.Assemble(this, ProgramText);
+			ProgramBinary = Assembler.Assemble(this, ProgramText, out var pcLineMap);
+			PcLineMap = pcLineMap;
 		}
 
 		public override void Cycle()

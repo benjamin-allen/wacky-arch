@@ -18,28 +18,35 @@ namespace Emulator.Architectures
 	public class AlphaArchitecture : ControlsConsole
 	{
 		public InterpreterCPU Cpu { get; set; }
-		public Port Top = new Port(new Pipe(), "TOP");
-		public Port Bottom = new Port(new Pipe(), "BOTTOM");
-		public Port Output = new Port(new Pipe(), "OUTPUT");
+		public FilledPort Top = new FilledPort(new List<Word> { new Word { Value = 10 }, new Word { Value = 5 } }, new Pipe(), "TOP");
+		public FilledPort Bottom = new FilledPort(new List<Word> { new Word { Value = 2 } }, new Pipe(), "BOTTOM");
+		public ExpectationPort Output = new ExpectationPort(new List<Word> { new Word { Value = 17 } }, "OUTPUT");
 
-		// SadConsole stuff
+		// SadConsole stuff - UI Components
 		public CodeBox CodeBox { get; set; }
 		public Button StepButton { get; set; }
 		public Button RunButton { get; set; }
 		public Button ResetButton { get; set; }
 		public Button LoadButton { get; set; }
 		public CPUInfoBox CpuInfoBox { get; set; }
-
-		private string statusText { get; set; }
-
+		public InputPort TopInputPort { get; set; }
+		public InputPort BottomInputPort { get; set; }
+		public OutputPort OutputPort { get; set; }
 		public CodeInstruction runInstruction { get; set; }
+
+		private List<ICyclable> cyclables { get; set; }
 
 		public AlphaArchitecture() : base((int)(Global.RenderWidth / Global.FontDefault.Size.X), (int)(Global.RenderHeight / Global.FontDefault.Size.Y))
 		{
+			cyclables = new List<ICyclable>();
 			Cpu = new InterpreterCPU(new Port[] { Top, Bottom, Output });
+			cyclables.Add(Cpu);
+			cyclables.Add(Top);
+			cyclables.Add(Bottom);
+			cyclables.Add(Output);
 			ThemeColors = SadConsole.Themes.Colors.CreateAnsi();
 
-			CodeBox = new CodeBox(35, 25);
+			CodeBox = new CodeBox(35, 25, Cpu);
 			CodeBox.Position = new Point((Width / 2) - (CodeBox.Width / 2), 0);
 			CodeBox.Parent = this;
 
@@ -67,6 +74,18 @@ namespace Emulator.Architectures
 			LoadButton.IsEnabled = false;
 			LoadButton.MouseButtonClicked += LoadCode;
 
+			TopInputPort = new InputPort(Top, 10, 8);
+			TopInputPort.Position = new Point(CodeBox.Position.X - TopInputPort.Width, 0);
+			TopInputPort.Parent = this;
+
+			BottomInputPort = new InputPort(Bottom, 18, 16);
+			BottomInputPort.Position = new Point(CodeBox.Position.X - BottomInputPort.Width, 0);
+			BottomInputPort.Parent = this;
+
+			OutputPort = new OutputPort(Output, Width - CodeBox.Position.X - CodeBox.Width);
+			OutputPort.Position = new Point(CodeBox.Position.X + CodeBox.Width, CodeBox.Position.Y + CodeBox.Height - 7);
+			OutputPort.Parent = this;
+
 			runInstruction = new CodeInstruction((hostObject, time) =>
 			{
 				var alphaArch = (AlphaArchitecture)hostObject;
@@ -75,7 +94,7 @@ namespace Emulator.Architectures
 				{
 					for (int i = 0; i < 10; i++)
 					{
-						alphaArch.Cpu.Cycle();
+						cyclables.ForEach(c => c.Cycle());
 					}
 				}
 
@@ -85,17 +104,27 @@ namespace Emulator.Architectures
 
 		private void StepProgram(object sender, MouseEventArgs e)
 		{
-			Cpu.Cycle();
-			if (Cpu.IsHalted)
+			try
 			{
-				StepButton.IsEnabled = false;
-				RunButton.IsEnabled = false;
-				ResetButton.IsEnabled = true;
+				CodeBox.Status = "";
+				cyclables.ForEach(c => c.Cycle());
+				if (Cpu.IsHalted)
+				{
+					StepButton.IsEnabled = false;
+					RunButton.IsEnabled = false;
+					ResetButton.IsEnabled = true;
+				}
+			}
+			catch (ComponentException cex)
+			{
+				CodeBox.Status = cex.ShortMessage;
+				Cpu.IsHalted = true;
 			}
 		}
 
 		private void RunProgram(object sender, MouseEventArgs e)
 		{
+			CodeBox.Status = "";
 			ResetButton.IsEnabled = true;
 			StepButton.IsEnabled = false;
 			this.Components.Add(runInstruction);
@@ -109,6 +138,7 @@ namespace Emulator.Architectures
 			LoadButton.IsEnabled = true;
 			ResetButton.IsEnabled = true;
 			this.Components.Remove(runInstruction);
+			CodeBox.Status = "CPU Reset";
 		}
 
 		private void LoadCode(object sender, MouseEventArgs e)
@@ -121,6 +151,7 @@ namespace Emulator.Architectures
 				StepButton.IsEnabled = true;
 				RunButton.IsEnabled = true;
 				LoadButton.IsEnabled = false;
+				CodeBox.Status = "Program Loaded";
 			}
 			catch(CPU.AssemblerException ex)
 			{

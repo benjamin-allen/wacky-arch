@@ -34,7 +34,7 @@ namespace CPU.Instructions
 					}
 					Cpu.IncrementPC = readDidSucceed;
 				}
-				catch (IndexOutOfRangeException e)
+				catch (IndexOutOfRangeException ex)
 				{
 					Cpu.IncrementPC = true;
 				}
@@ -48,7 +48,7 @@ namespace CPU.Instructions
 					writeDidSucceed = pipe.Write(Cpu.Registers[X].Data.Value);
 					Cpu.IncrementPC = writeDidSucceed;
 				}
-				catch (IndexOutOfRangeException e)
+				catch (IndexOutOfRangeException ex)
 				{
 					Cpu.IncrementPC = true;
 				}

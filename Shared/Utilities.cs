@@ -14,5 +14,16 @@
 			int shiftAmt = 32 - (bit + 1);
 			return (value << shiftAmt) >> shiftAmt;
 		}
+
+		/// <summary>
+		/// Center-aligns this string with the specified padding character
+		/// </summary>
+		/// From https://stackoverflow.com/a/32768784/8286492
+		public static string PadSides(this string str, int totalWidth, char paddingChar = ' ')
+		{
+			int padding = totalWidth - str.Length;
+			int padLeft = padding / 2 + str.Length;
+			return str.PadLeft(padLeft, paddingChar).PadRight(totalWidth, paddingChar);
+		}
 	}
 }

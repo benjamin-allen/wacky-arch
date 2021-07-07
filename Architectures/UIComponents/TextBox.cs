@@ -147,6 +147,7 @@ namespace Emulator.UIComponents
 				}
 			}
 
+			// Refactor to use info.KeysPressed. Durh.
 			foreach (Keys key in typeableKeys)
 			{
 				if (info.IsKeyPressed(key))
@@ -218,7 +219,7 @@ namespace Emulator.UIComponents
 			{
 				if(cursor.X < width-1)
 				{
-					text[cursor.Y] = text[cursor.Y].Insert(cursor.X, character.ToUpper());
+					text[cursor.Y] = text[cursor.Y].Insert(cursor.X, character);
 					cursor.X += 1;
 				}
 			}

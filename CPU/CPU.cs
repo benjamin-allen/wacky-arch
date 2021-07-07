@@ -1,15 +1,17 @@
 ﻿using Components;
 using System;
+using System.Collections.Generic;
 
 namespace CPU
 {
-	public class CPU
+	public class CPU : ICyclable
 	{
 		public Port[] Ports;
 		public Register[] Registers;
 		public readonly Register Const;
 		public bool IncrementPC;
 		public bool IsHalted;
+		public Dictionary<int, int> PcLineMap;
 
 		private Word PC;
 
@@ -24,6 +26,7 @@ namespace CPU
 			};
 			PC = new Word();
 			Const = Registers[3];
+			PcLineMap = new Dictionary<int, int>();
 		}
 
 		public CPU(Port[] ports) : this()
@@ -71,12 +74,6 @@ namespace CPU
 
 			// Reset PC
 			PC.Value = 0;
-
-			// Reset Ports
-			foreach(Port port in Ports)
-			{
-				port.Pipe.Status = PipeStatus.Idle;
-			}
 
 			// Unset IsHalted
 			IsHalted = false;

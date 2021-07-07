@@ -38,7 +38,7 @@ namespace Test
 				"SUBC 1",
 				"JGZ @FIB");
 
-			List<Word> binary = Assemble(cpu, program);
+			List<Word> binary = Assemble(cpu, program, out _);
 
 			Assert.AreEqual(0b1111_0000_0001, binary[0].Value & 0xFFF);
 			Assert.AreEqual(0b0011_0011_0000, binary[1].Value & 0xFFF);
@@ -69,7 +69,7 @@ namespace Test
 				"NEG R2",
 				"NEG R2");
 
-			List<Word> binary = Assemble(cpu, program);
+			List<Word> binary = Assemble(cpu, program, out _);
 
 			Assert.AreEqual(0xF0A, binary[0].Value & 0xFFF);
 			Assert.AreEqual(0x330, binary[1].Value & 0xFFF);
@@ -136,7 +136,7 @@ namespace Test
 				"@DONE"
 				);
 
-			List<Word> binary = Assembler.Assemble(cpu2, program);
+			List<Word> binary = Assembler.Assemble(cpu2, program, out _);
 
 			Assert.AreEqual(0x400, binary[0].Value & 0xFFF);
 			Assert.AreEqual(0x322, binary[1].Value & 0xFFF);
@@ -183,6 +183,36 @@ namespace Test
 			Assert.AreEqual(0, cpu2.Registers[2].Data.Value);
 			Assert.AreEqual(-1, cpu2.Const.Data.Value);
 			Assert.AreEqual(14, cpu2.GetPCValue());
+		}
+
+		[TestMethod]
+		public void TestAssemblyLineCounter()
+		{
+			var program = String.Join(Environment.NewLine,
+				"MOVC 1",
+				"MOV R0 CONST",
+				"MOV R1 CONST",
+				"# SET UP THA LOOP",
+				"MOVC 10",
+				"",
+				"# COMPUTE THE NEXT FIBONACCI NUMBER AND STORE IT INTO R0",
+				"@FIB",
+				"ADD R0 R1",
+				"SWP R0 R1",
+				"SUBC 1",
+				"JGZ @FIB");
+
+			var cpu = new InterpreterCPU();
+			var _ = Assembler.Assemble(cpu, program, out var pcTextLineMap);
+
+			Assert.AreEqual(0, pcTextLineMap[0]);
+			Assert.AreEqual(1, pcTextLineMap[1]);
+			Assert.AreEqual(2, pcTextLineMap[2]);
+			Assert.AreEqual(4, pcTextLineMap[3]);
+			Assert.AreEqual(8, pcTextLineMap[4]);
+			Assert.AreEqual(9, pcTextLineMap[5]);
+			Assert.AreEqual(10, pcTextLineMap[6]);
+			Assert.AreEqual(11, pcTextLineMap[7]);
 		}
 	}
 }

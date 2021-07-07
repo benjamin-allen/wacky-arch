@@ -17,11 +17,11 @@ namespace CPU
 		/// </summary>
 		/// <param name="assemblyText"></param>
 		/// <returns></returns>
-		public static List<Word> Assemble(CPU cpu, string assemblyText)
+		public static List<Word> Assemble(CPU cpu, string assemblyText, out Dictionary<int, int> pcTextLineMap)
 		{
 			var lines = CleanText(assemblyText);
 
-			return AssembleText(cpu, lines);
+			return AssembleText(cpu, lines, out pcTextLineMap);
 		}
 
 		private static List<string> CleanText(string assembly)
@@ -32,11 +32,12 @@ namespace CPU
 			return normalized.Split(Environment.NewLine).Select(s => s.Trim()).ToList();
 		}
 
-		private static List<Word> AssembleText(CPU cpu, List<string> assemblyLines)
+		private static List<Word> AssembleText(CPU cpu, List<string> assemblyLines, out Dictionary<int, int> pcTextLineMap)
 		{
-			List<Word> words = new List<Word>();
-			Dictionary<string, int> labelAddresses = new Dictionary<string, int>();
-			List<Tuple<string, int, int>> deferredInstructions = new List<Tuple<string, int, int>>();
+			var words = new List<Word>();
+			var labelAddresses = new Dictionary<string, int>();
+			var deferredInstructions = new List<Tuple<string, int, int>>();
+			pcTextLineMap = new Dictionary<int, int>();
 			int currentAddress = 0;
 
 			for(int i = 0; i < assemblyLines.Count; i++)
@@ -98,6 +99,7 @@ namespace CPU
 				{
 					throw new NotImplementedException();
 				}
+				pcTextLineMap.Add(currentAddress, i);
 				currentAddress += 1;
 				words.Add(result);
 			}
