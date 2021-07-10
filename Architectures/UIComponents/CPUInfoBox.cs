@@ -28,7 +28,7 @@ namespace Emulator.UIComponents
 			Print(1, 3, $"R1 {String.Format("{0,5:####0}", cpu.Registers[1].Data.Value)} | {cpu.Registers[1].Data.Value & 0xFFF:X3}");
 			Print(1, 4, $"R2 {String.Format("{0,5:####0}", cpu.Registers[2].Data.Value)} | {cpu.Registers[2].Data.Value & 0xFFF:X3}");
 			Print(1, 5, $"C  {String.Format("{0,5:####0}", cpu.Registers[3].Data.Value)} | {cpu.Registers[3].Data.Value & 0xFFF:X3}");
-			Print(1, 7, $"CPU: {(cpu.IsHalted ? "  HALTED" : (cpu.PcLineMap.Count > 0 ? "   READY" : ""))}");
+			Print(1, 7, $"CPU: {(cpu.IsHalted ? "  HALTED" : (cpu.IsErrored ? "   ERROR" : (cpu.PcLineMap.Count > 0 ? "   READY" : "")))}");
 		}
 	}
 }

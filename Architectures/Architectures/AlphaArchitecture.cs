@@ -118,7 +118,7 @@ namespace Emulator.Architectures
 			catch (ComponentException cex)
 			{
 				CodeBox.Status = cex.ShortMessage;
-				Cpu.IsHalted = true;
+				Cpu.IsErrored = true;
 			}
 		}
 

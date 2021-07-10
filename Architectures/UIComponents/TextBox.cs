@@ -132,7 +132,8 @@ namespace Emulator.UIComponents
 	
 		private bool TypeCharacter(SadConsole.Input.Keyboard info)
 		{
-			// need special handling for 
+			bool returnValue = false;
+			// need special handling for # and @
 			if (info.IsKeyDown(Keys.LeftShift) || info.IsKeyDown(Keys.RightShift))
 			{
 				if (info.IsKeyPressed(Keys.D3))
@@ -148,72 +149,72 @@ namespace Emulator.UIComponents
 			}
 
 			// Refactor to use info.KeysPressed. Durh.
-			foreach (Keys key in typeableKeys)
+			foreach (AsciiKey key in info.KeysPressed)
 			{
-				if (info.IsKeyPressed(key))
+				if (typeableKeys.Contains(key.Key))
 				{
-					insertCharacter(((char)key).ToString());
-					return true;
+					insertCharacter(key.Character.ToString());
+					returnValue = true;
+				}
+
+				if (key.Key == Keys.Enter)
+				{
+					if (text.Count < height - 1)
+					{
+						string fullLine = text[cursor.Y];
+						text[cursor.Y] = fullLine.Substring(0, cursor.X);
+						text.Insert(cursor.Y + 1, fullLine.Substring(cursor.X));
+						cursor.Y += 1;
+						cursor.X = 0;
+						returnValue = true;
+					}
+				}
+
+				if (key.Key == Keys.Back)
+				{
+					if (cursor.X == 0 && cursor.Y == 0)
+						continue;
+					if (cursor.X == 0)
+					{
+						cursor.X = text[cursor.Y - 1].Length;
+						text[cursor.Y - 1] = text[cursor.Y - 1] + text[cursor.Y];
+						text.RemoveAt(cursor.Y);
+						cursor.Y -= 1;
+						returnValue = true;
+					}
+					if (cursor.X < text[cursor.Y].Length)
+					{
+						text[cursor.Y] = text[cursor.Y].Substring(0, cursor.X - 1) + text[cursor.Y].Substring(cursor.X);
+						cursor.X -= 1;
+						returnValue = true;
+					}
+					else
+					{
+						text[cursor.Y] = text[cursor.Y].Substring(0, cursor.X - 1);
+						cursor.X -= 1;
+						returnValue = true;
+					}
+				}
+
+				if (key.Key == Keys.Delete)
+				{
+					if (cursor.X == 0 && cursor.Y == text.Count - 1)
+						continue;
+					if (cursor.X == text[cursor.Y].Length)
+					{
+						text[cursor.Y] = text[cursor.Y] + text[cursor.Y + 1];
+						text.RemoveAt(cursor.Y + 1);
+						returnValue = true;
+					}
+					else
+					{
+						text[cursor.Y] = text[cursor.Y].Substring(0, cursor.X) + text[cursor.Y].Substring(cursor.X + 1);
+						returnValue = true;
+					}
 				}
 			}
 
-			if (info.IsKeyPressed(Keys.Enter))
-			{
-				if(text.Count < height-1)
-				{
-					string fullLine = text[cursor.Y];
-					text[cursor.Y] = fullLine.Substring(0, cursor.X);
-					text.Insert(cursor.Y + 1, fullLine.Substring(cursor.X));
-					cursor.Y += 1;
-					cursor.X = 0;
-					return true;
-				}
-			}
-
-			if (info.IsKeyPressed(Keys.Back))
-			{
-				if (cursor.X == 0 && cursor.Y == 0)
-					return false;
-				if (cursor.X == 0)
-				{
-					cursor.X = text[cursor.Y - 1].Length;
-					text[cursor.Y - 1] = text[cursor.Y - 1] + text[cursor.Y];
-					text.RemoveAt(cursor.Y);
-					cursor.Y -= 1;
-					return true;
-				}
-				if (cursor.X < text[cursor.Y].Length)
-				{
-					text[cursor.Y] = text[cursor.Y].Substring(0, cursor.X - 1) + text[cursor.Y].Substring(cursor.X);
-					cursor.X -= 1;
-					return true;
-				}
-				else
-				{
-					text[cursor.Y] = text[cursor.Y].Substring(0, cursor.X - 1);
-					cursor.X -= 1;
-					return true;
-				}
-			}
-
-			if(info.IsKeyPressed(Keys.Delete))
-			{
-				if (cursor.X == 0 && cursor.Y == text.Count - 1)
-					return false;
-				if (cursor.X == text[cursor.Y].Length)
-				{
-					text[cursor.Y] = text[cursor.Y] + text[cursor.Y + 1];
-					text.RemoveAt(cursor.Y + 1);
-					return true;
-				}
-				else
-				{
-					text[cursor.Y] = text[cursor.Y].Substring(0, cursor.X) + text[cursor.Y].Substring(cursor.X + 1);
-					return true;
-				}
-			}
-
-			return false;
+			return returnValue;
 
 			void insertCharacter(string character)
 			{

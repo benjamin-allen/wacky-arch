@@ -11,6 +11,7 @@ namespace CPU
 		public readonly Register Const;
 		public bool IncrementPC;
 		public bool IsHalted;
+		public bool IsErrored;
 		public Dictionary<int, int> PcLineMap;
 
 		private Word PC;
@@ -77,6 +78,7 @@ namespace CPU
 
 			// Unset IsHalted
 			IsHalted = false;
+			IsErrored = false;
 		}
 	}
 }
