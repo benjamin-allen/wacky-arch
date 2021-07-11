@@ -8,10 +8,12 @@ namespace Components
 	public class ExpectationPort : Port, ICyclable
 	{
 		public List<Word> ExpectedData { get; set; }
+		private List<Word> loadedData { get; set; }
 
 		public ExpectationPort(List<Word> expectedData, string name) : base(new AlwaysWriteablePipe(), name)
 		{
 			ExpectedData = expectedData;
+			loadedData = expectedData.Select(w => new Word { Value = w.Value }).ToList();
 			Cycle();
 		}
 
@@ -27,13 +29,20 @@ namespace Components
 					if (word.Value != ExpectedData[0].Value)
 					{
 						// Halt the emulator somehow.
-						string errMessage = $"Expected {ExpectedData[0].Value}. Got {word.Value}";
+						string errMessage = $"{Pipe.Name}: Expected {ExpectedData[0].Value}. Got {word.Value}";
 						throw new ComponentException(errMessage, errMessage);
 					}
 
 					ExpectedData = ExpectedData.Skip(1).ToList();
 				} 
 			}
+		}
+
+		public override void Reset()
+		{
+			ExpectedData = loadedData.Select(w => new Word { Value = w.Value }).ToList();
+			this.Pipe.Status = PipeStatus.Idle;
+			Cycle();
 		}
 	}
 }

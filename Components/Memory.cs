@@ -74,6 +74,11 @@ namespace Components
 			}
 		}
 
+		public void Reset()
+		{
+			Fill(0);
+		}
+
 
 		/// <summary>
 		/// Fill the memory with words of a preset value

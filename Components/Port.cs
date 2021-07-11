@@ -18,6 +18,8 @@ namespace Components
 
 		public virtual void Cycle() { }
 
+		public virtual void Reset() { }
+
 		public Pipe Pipe { get; set; }
 		public string Name { get; set; }
 	}

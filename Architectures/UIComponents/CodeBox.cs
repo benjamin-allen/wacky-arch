@@ -78,6 +78,21 @@ namespace Emulator.UIComponents
 				}	
 			}
 
+			// draw pipe "connections"
+			SetGlyph(0, 9, 221);
+			SetGlyph(0, 10, 221);
+			SetGlyph(0, 11, 221);
+			SetGlyph(0, 17, 221);
+			SetGlyph(0, 18, 221);
+			SetGlyph(0, 19, 221);
+			SetGlyph(Width - 1, 18, 222);
+			SetGlyph(Width - 1, 19, 222);
+			SetGlyph(Width - 1, 20, 222);
+
+			// Draw cpubox "connectors"
+			SetGlyph(Width - 1, 6, 222);
+			SetGlyph(Width - 1, 10, 222);
+
 			// Draw Status text
 			statusConsole.Clear();
 			statusConsole.Cursor.Move(2, this.textBox.Height + 1).Print(Status);

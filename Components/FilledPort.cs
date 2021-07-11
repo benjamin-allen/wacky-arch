@@ -9,10 +9,12 @@ namespace Components
 	{
 		public List<Word> BacklogData { get; set; }
 		public Word CurrentData { get; set; }
+		private List<Word> loadedData { get; set; }
 
 		public FilledPort(List<Word> data, Pipe pipe, string name) : base(pipe, name)
 		{
 			this.BacklogData = data;
+			loadedData = data.Select(w => new Word { Value = w.Value }).ToList();
 			Cycle();
 		}
 
@@ -30,6 +32,13 @@ namespace Components
 				CurrentData = null;
 				Pipe.Status = PipeStatus.Idle;
 			}
+		}
+
+		public override void Reset()
+		{
+			BacklogData = loadedData.Select(w => new Word { Value = w.Value }).ToList();
+			this.Pipe.Status = PipeStatus.Idle;
+			Cycle();
 		}
 	}
 }

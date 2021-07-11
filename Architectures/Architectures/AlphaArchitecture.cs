@@ -18,9 +18,9 @@ namespace Emulator.Architectures
 	public class AlphaArchitecture : ControlsConsole
 	{
 		public InterpreterCPU Cpu { get; set; }
-		public FilledPort Top = new FilledPort(new List<Word> { new Word { Value = 10 }, new Word { Value = 5 } }, new Pipe(), "TOP");
-		public FilledPort Bottom = new FilledPort(new List<Word> { new Word { Value = 2 } }, new Pipe(), "BOTTOM");
-		public ExpectationPort Output = new ExpectationPort(new List<Word> { new Word { Value = 17 } }, "OUTPUT");
+		public FilledPort Top = new FilledPort(new List<Word> { new Word { Value = 10 }, new Word { Value = 5 } }, new Pipe(), "top");
+		public FilledPort Bottom = new FilledPort(new List<Word> { new Word { Value = 2 } }, new Pipe(), "bottom");
+		public ExpectationPort Output = new ExpectationPort(new List<Word> { new Word { Value = 17 } }, "output");
 
 		// SadConsole stuff - UI Components
 		public CodeBox CodeBox { get; set; }
@@ -51,7 +51,7 @@ namespace Emulator.Architectures
 			CodeBox.Parent = this;
 
 			CpuInfoBox = new CPUInfoBox(Cpu);
-			CpuInfoBox.Position = new Point(CodeBox.Width + CodeBox.Position.X + 1, 0);
+			CpuInfoBox.Position = new Point(CodeBox.Width + CodeBox.Position.X, 0);
 			CpuInfoBox.Parent = this;
 
 			StepButton = new Button(CpuInfoBox.Width - 2, 1) { Text = "STEP", Position = new Point(CpuInfoBox.Position.X + 1, CpuInfoBox.Position.Y + CpuInfoBox.Height + 1) };
@@ -132,19 +132,23 @@ namespace Emulator.Architectures
 
 		private void ResetCpu(object sender, MouseEventArgs e)
 		{
-			Cpu.Reset();
+			foreach(var cyclable in cyclables)
+			{
+				cyclable.Reset();
+			}
 			StepButton.IsEnabled = true;
 			RunButton.IsEnabled = true;
 			LoadButton.IsEnabled = true;
 			ResetButton.IsEnabled = true;
 			this.Components.Remove(runInstruction);
-			CodeBox.Status = "CPU Reset";
+			CodeBox.Status = "System Reset";
 		}
 
 		private void LoadCode(object sender, MouseEventArgs e)
 		{
 			try
 			{
+				ResetCpu(sender, e);
 				CodeBox.ErrorLine = -1;
 				CodeBox.Status = "";
 				Cpu.Load(CodeBox.Text);
@@ -167,6 +171,7 @@ namespace Emulator.Architectures
 			if (StepButton != null)
 			{
 				DrawBox(new Rectangle(StepButton.Position.X - 1, StepButton.Position.Y - 1, CpuInfoBox.Width, 6), new Cell(Color.White, Color.Black, '-'), null, CellSurface.ConnectedLineThin);
+				SetGlyph(StepButton.Position.X - 1, StepButton.Position.Y, 221);
 			}
 		}
 
