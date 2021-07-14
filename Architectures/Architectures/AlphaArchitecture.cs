@@ -10,6 +10,8 @@ using SadConsole.Input;
 using Emulator.UIComponents;
 using SadConsole.Controls;
 using SadConsole.Instructions;
+using Emulator.Challenges;
+using System.Linq;
 
 namespace Emulator.Architectures
 {
@@ -18,9 +20,9 @@ namespace Emulator.Architectures
 	public class AlphaArchitecture : ControlsConsole
 	{
 		public InterpreterCPU Cpu { get; set; }
-		public FilledPort Top = new FilledPort(new List<Word> { new Word { Value = 10 }, new Word { Value = 5 } }, new Pipe(), "top");
-		public FilledPort Bottom = new FilledPort(new List<Word> { new Word { Value = 2 } }, new Pipe(), "bottom");
-		public ExpectationPort Output = new ExpectationPort(new List<Word> { new Word { Value = 17 } }, "output");
+		public FilledPort Top;
+		public FilledPort Bottom;
+		public ExpectationPort Output;
 
 		// SadConsole stuff - UI Components
 		public CodeBox CodeBox { get; set; }
@@ -36,14 +38,25 @@ namespace Emulator.Architectures
 
 		private List<ICyclable> cyclables { get; set; }
 
-		public AlphaArchitecture() : base((int)(Global.RenderWidth / Global.FontDefault.Size.X), (int)(Global.RenderHeight / Global.FontDefault.Size.Y))
+		public AlphaArchitecture(AlphaChallenge challenge) : base((int)(Global.RenderWidth / Global.FontDefault.Size.X), (int)(Global.RenderHeight / Global.FontDefault.Size.Y))
 		{
+			Top = new FilledPort(challenge.TopInputData.Select(i => new Word { Value = i }).ToList(), new Pipe(), "top");
+			Bottom = new FilledPort(challenge.BottomInputData.Select(i => new Word { Value = i }).ToList(), new Pipe(), "bottom");
+			Output = new ExpectationPort(challenge.OutputData.Select(i => new Word { Value = i }).ToList(), "output");
+
+			// Init cyclables
 			cyclables = new List<ICyclable>();
 			Cpu = new InterpreterCPU(new Port[] { Top, Bottom, Output });
 			cyclables.Add(Cpu);
 			cyclables.Add(Top);
 			cyclables.Add(Bottom);
 			cyclables.Add(Output);
+
+			InitGUI();
+		}
+
+		private void InitGUI()
+		{
 			ThemeColors = SadConsole.Themes.Colors.CreateAnsi();
 
 			CodeBox = new CodeBox(35, 25, Cpu);

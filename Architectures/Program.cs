@@ -8,6 +8,9 @@ using Emulator.UIComponents;
 using Emulator.Architectures;
 using SadConsole.Themes;
 using SadConsole.Controls;
+using Newtonsoft.Json;
+using Emulator.Challenges;
+using System.IO;
 
 namespace Emulator
 {
@@ -34,7 +37,8 @@ namespace Emulator
 			SadConsole.Themes.Library.Default.SetControlTheme(typeof(Button), new SadConsole.Themes.ButtonTheme());
 
 			//Global.CurrentScreen = new Architectures.AlphaArchitecture();
-			var aarch = new AlphaArchitecture();
+			var challenges = JsonConvert.DeserializeObject<List<AlphaChallenge>>(File.ReadAllText("Challenges/BootstrapChallenges.json"));
+			var aarch = new AlphaArchitecture(challenges[0]);
 			Global.CurrentScreen = aarch;
 			Global.CurrentScreen.IsFocused = true;
 		}
