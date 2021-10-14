@@ -54,7 +54,7 @@ namespace Test.Components
 			}
 			catch (ComponentException cex)
 			{
-				Assert.AreEqual("Expected 1. Got 0", cex.ShortMessage);
+				Assert.AreEqual("TEST: Expected 1. Got 0", cex.ShortMessage);
 			}
 		}
 	}

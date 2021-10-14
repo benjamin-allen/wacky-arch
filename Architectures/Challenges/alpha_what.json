@@ -1,0 +1,12 @@
+﻿[
+  {
+    "ChallengeId": 14,
+    "Name": "ROM Repair - what even?",
+    "Description": "Another day, another inscrutable broken ROM function.",
+    "StartingComments": "Whatever it is it takes the form f(x, y, z) with x and y supplied by TOP and z supplied by BOTTOM.\n\nf(0, 0, 45) = f(0, 0, 876) = f(0, 0, 0) = 0\nf(0, 100, 50) = f(10, 90, 50) = 100; f(-10, 10, 900) = 10\nf(-10, 10, -564) = -10\nf(0, 1, 1) = f(0, 100, 1) = 2\n\nImplement this as an infinite loop that does this continuously.",
+    "TopInputData": [ 0, 0, 0, 0, 0, 0, 0, 100, 10, 90, -10, 10, -10, 10, 0, 1, 0, 100 ],
+    "BottomInputData": [ 45, 876, 0, 50, 50, 900, -564, 1, 1 ],
+    "OutputData": [ 0, 0, 0, 100, 100, 10, -10, 2, 2 ],
+    "Order":  55
+  }
+]

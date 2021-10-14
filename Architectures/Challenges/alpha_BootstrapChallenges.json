@@ -1,0 +1,92 @@
+﻿[
+  {
+    "ChallengeId":  1,
+    "Name": "Bootstrap 0 - Running Programs",
+    "Description": "This challenge teaches you how to run programs and write answers to the output pipe",
+    "StartingComments": "Welcome! Each challenge has instructions or hints that get placed here.\n+ You'll write assembly code in the above text box.\n+ The pipes on the left may have input data. The pipe on the right receives output data.\n\n+ For this first challenge, the only thing you need to do is write 0 to the output pipe.\n + The registers already have a value of 0. WRITE R0 OUTPUT should do the trick.\n + Load the program with the LOAD buttom. Run it with STEP or RUN. ",
+    "TopInputData": [],
+    "BottomInputData": [],
+    "OutputData": [ 0 ],
+    "Order":  0
+  },
+  {
+    "ChallengeId":  3,
+    "Name": "Bootstrap 1 - Reading from Pipes",
+    "Description": "Learn how to read data from input pipes",
+    "StartingComments": "You can use the READ <REGISTER> <PIPE> command to put data from a pipe into a register.\n\n + To complete this challenge just read data from TOP 3 times and write the values in reverse order to OUTPUT. Then do the same with BOTTOM.",
+    "TopInputData": [ 5, 6, 7 ],
+    "BottomInputData": [ 321, 214, 107 ],
+    "OutputData": [ 7, 6, 5, 107, 214, 321 ],
+    "Order":  1
+  },
+  {
+    "ChallengeId": 4,
+    "Name": "Bootstrap 2a - Arithmetic",
+    "Description": "Redo first grade, but with more caffeine",
+    "StartingComments": "Use the MOV instruction to copy data from one register to another. Use the manual to learn about the other arithmetic instructions. \n + Read A from TOP and B from BOTTOM. \n + Write to OUTPUT the values A + B, A - B, A * B, A / B, A % B, and -A",
+    "TopInputData": [ 42 ],
+    "BottomInputData": [ 7 ],
+    "OutputData": [ 49, 35, 294, 6, 0, -42 ],
+    "Order":  2
+  },
+  {
+    "ChallengeId": 5,
+    "Name": "Bootstrap 2b - Bitwise Arithmetic",
+    "Description": "Redo high school compsci, but with more techno music",
+    "StartingComments": "Use the MOV instruction to copy data from one register to another. Use the manual to learn about other bitwise instructions. \n + Read A from TOP and B from BOTTOM. \n + Write to OUTPUT the values A OR B, A AND B, A XOR B, and NOT A",
+    "TopInputData": [ 5 ],
+    "BottomInputData": [ 1 ],
+    "OutputData": [ 5, 1, 4, -6 ],
+    "Order":  3
+  },
+  {
+    "ChallengeId":  6,
+    "Name": "Bootstrap 2c - Shifts",
+    "Description": "Redo first-year programming, but without that creeping feeling of dread",
+    "StartingComments": "Use the MOV instruction to copy data from register to another. Use the manual to learn about the other shift instructions. \n\n + Read A from TOP. \n + Write to OUTPUT the values A << 4, A >> 2, and A rotated by 6 bits",
+    "TopInputData": [ 110 ],
+    "BottomInputData": [],
+    "OutputData": [ 1760, 27, -1151 ],
+    "Order":  4
+  },
+  {
+    "ChallengeId": 7,
+    "Name": "Bootstrap 3 - CONST and CMP",
+    "Description": "Learn about the CONST register and how to compare registers",
+    "StartingComments": "CONST is a register that can be used in all the commands that other registers use, but there are a few special instructions that interact only with CONST (see manual).\nCMP is an instruction that compares 2 registers and sets the value of CONST based on the result.\n\n+ Read a value from TOP and a value from BOTTOM. \n+ Write 1 to OUTPUT if the value in TOP was greater; Write -1 to OUTPUT if the value in BOTTOM is greater; Write 0 to OUTPUT if both values were the same. \n + Do this 3 times.",
+    "TopInputData": [ 90, 75, 333 ],
+    "BottomInputData": [ 3, 842, 333 ],
+    "OutputData": [ 1, -1, 0 ],
+    "Order":  5
+  },
+  {
+    "ChallengeId": 10,
+    "Name": "Bootstrap 4a - If/Else",
+    "Description": "Learn about branching with JMP and friends",
+    "StartingComments": "A label is a named location in your code, starting with @, like @LOOP or @branch. The JMP instruction can be provided a label to move execution to the instruction after that label.\nJEZ @label jumps to @label if const = 0, JGZ @label jumps to @label if const > 0, etc.\n\n + Read a value from TOP and a value from BOTTOM.\n + If TOP > BOTTOM, write TOP * 3. Else, write BOTTOM - 40.",
+    "TopInputData": [ 4 ],
+    "BottomInputData": [ 3 ],
+    "OutputData": [ 12 ],
+    "Order":  6
+  },
+  {
+    "ChallengeId":  8,
+    "Name": "Bootstrap 4b - Infinite Loops",
+    "Description": "Learn about infinite looping with JMP",
+    "StartingComments": "JMP allows us to implement loops. \n\n + Read a value from TOP and a value from BOTTOM. \n+ If the sum is > 100, write TOP * 3 to OUTPUT.\n+ Else, write BOTTOM - 40 to OUTPUT \n+ Use a JMP at the end of the process to go back to the start of the program, creating an infinite loop.",
+    "TopInputData": [ 400, 35, 15, 417, 351, 358, 396, 43, 101, 259, 89, 489, 199, 225, 320, 58, 297, 129, 205, 192, 358, 283, 10, 469, 446, 145, 346, 106, 83, 441, 426, 140, 475, 215, 314, 225, 434, 418, 68, 69 ],
+    "BottomInputData": [ 487, 63, 233, 278, 121, 400, 125, 89, 246, 155, 407, 423, 127, 145, 340, 25, 336, 468, 96, 140, 329, 51, 36, 100, 422, 94, 138, 269, 472, 251, 318, 110, 197, 261, 255, 173, 387, 51, 111, 81 ],
+    "OutputData": [ 1200, 23, 45, 1251, 1053, 1074, 1188, 129, 303, 777, 267, 1467, 597, 675, 960, -15, 891, 387, 615, 576, 1074, 849, -4, 1407, 1338, 435, 1038, 318, 249, 1323, 1278, 420, 1425, 645, 942, 675, 1302, 1254, 204, 207 ],
+    "Order":  7
+  },
+  {
+    "ChallengeId": 9,
+    "Name": "Bootstrap 5 - Loops",
+    "Description": "Learn about counter-based loops",
+    "StartingComments": "You can create non-infinite loops by using a counter variable and jumping only when the counter reaches a predetermined value. To loop 10 times, for example, set the counter to 10 and decrement each time the loop runs. At the bottom of the loop use a JEZ followed by a JMP instruction. When the counter hits 0, the JEZ instruction will jump and you can exit a loop.\n\n For this task, read a number n from the input pipe then write the n, n-1, n-2, ..., 0 to the output pipe",
+    "TopInputData": [ 100 ],
+    "BottomInputData": [],
+    "OutputData": [ 100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 76, 75, 74, 73, 72, 71, 70, 69, 68, 67, 66, 65, 64, 63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 ],
+    "Order":  8
+  }
+]

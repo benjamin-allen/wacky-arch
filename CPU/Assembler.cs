@@ -259,9 +259,9 @@ namespace CPU
 					wordValue |= 0b0001_1000_0000; break;
 				case "SRA":
 					wordValue |= 0b0001_1100_0000; break;
-				case "ROL":
+				case "RL":
 					wordValue |= 0b0010_0000_0000; break;
-				case "ROR":
+				case "RR":
 					wordValue |= 0b0010_1000_0000; break;
 				default:
 					throw new NotImplementedException();

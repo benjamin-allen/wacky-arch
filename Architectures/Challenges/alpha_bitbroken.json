@@ -1,0 +1,12 @@
+﻿[
+  {
+    "ChallengeId": 11,
+    "Name": "ROM Repair - Only a bit broken",
+    "Description": "A portion of the ROM is broken and needs to be rewritten. We know some of its inputs and outputs but not much else.",
+    "StartingComments": "A portion of the ROM has been corrupted; you'll need to deduce the function and implement it. The function only needs a single word, which gets fed in from TOP.\n\nf(1) = f(2) = f(4) = f(8) = ... = 1\nf(3) = f(5) = 2\nf(46) = f(673) = 3\nf(-1) = 12\nImplement it as an infinite loop.",
+    "TopInputData": [ 1, 2, 4, 8, 3, 5, 46, 673, -1 ],
+    "BottomInputData": [],
+    "OutputData": [ 1, 1, 1, 1, 2, 2, 4, 4, 12 ],
+    "Order":  50
+  }
+]

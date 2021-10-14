@@ -42,18 +42,17 @@ namespace CPU.Instructions
 						throw new DivideByZeroException();
 					}
 
-					int y = Cpu.Registers[Y].Data.Value; // Do the Mod step first in case X = Y. Then X gets X / Y and not X % Y
-					Cpu.Registers[Y].Data.Value = Cpu.Registers[X].Data.Value % Cpu.Registers[Y].Data.Value;
-					Cpu.Registers[X].Data.Value = Cpu.Registers[X].Data.Value / y;
+					int y = Cpu.Registers[Y].Data.Value; 
+					Cpu.Registers[X].Data.Value = Cpu.Registers[X].Data.Value / Cpu.Registers[Y].Data.Value;
 					break;
 				case 0x4:
 					// Modulus
 					if(Cpu.Registers[Y].Data.Value == 0)
 					{
-						throw new DivideByZeroException();
+						throw new ComponentException("Division by 0", "Division by 0");
 					}
 
-					Cpu.Registers[X].Data.Value = Cpu.Registers[X].Data.Value % Cpu.Registers[Y].Data.Value;
+					Cpu.Registers[X].Data.Value = ((Cpu.Registers[X].Data.Value % Cpu.Registers[Y].Data.Value) + Cpu.Registers[Y].Data.Value) % Cpu.Registers[Y].Data.Value; // Smart mod, dammit
 					break;
 				case 0x5:
 					// Negate

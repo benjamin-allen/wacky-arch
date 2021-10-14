@@ -214,5 +214,35 @@ namespace Test
 			Assert.AreEqual(10, pcTextLineMap[6]);
 			Assert.AreEqual(11, pcTextLineMap[7]);
 		}
+
+		[TestMethod]
+		public void PcLineMapTest()
+		{
+			var program = String.Join(Environment.NewLine,
+				"addc 0",
+				"addc 0",
+				"cmp r0 r1",
+				"",
+				"jez @else",
+				"jlz @else",
+				"addc 1",
+				"jmp @exit",
+				"",
+				"@else",
+				"addc 2",
+				"",
+				"@exit");
+			var cpu = new InterpreterCPU();
+			var _ = Assembler.Assemble(cpu, program, out var pcLineMap);
+
+			Assert.AreEqual(0, pcLineMap[0]);
+			Assert.AreEqual(1, pcLineMap[1]);
+			Assert.AreEqual(2, pcLineMap[2]);
+			Assert.AreEqual(4, pcLineMap[3]);
+			Assert.AreEqual(5, pcLineMap[4]);
+			Assert.AreEqual(6, pcLineMap[5]);
+			Assert.AreEqual(7, pcLineMap[6]);
+			Assert.AreEqual(10, pcLineMap[7]);
+		}
 	}
 }

@@ -1,0 +1,12 @@
+﻿[
+  {
+    "ChallengeId": 15,
+    "Name": "ROM Repair - Fibonacci?",
+    "Description": "Who needs a function that sums the nth and mth Fibonacci numbers?",
+    "StartingComments": "Even when we know what this ROM wants it still boggles the mind. Sum the nth and mth Fibonacci numbers.\n\nn comes from TOP, m comes from BOTTOM.\nImplement this as an infinite loop.",
+    "TopInputData": [ 6, 8, 8, 12, 2 ],
+    "BottomInputData": [ 1, 7, 8, 14, 9 ],
+    "OutputData": [ 9, 34, 42, 521, 35 ],
+    "Order": 30
+  },
+]

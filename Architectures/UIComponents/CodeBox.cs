@@ -16,7 +16,8 @@ namespace Emulator.UIComponents
 		private ScrollingConsole statusConsole;
 
 		public string Status { get; set; }
-		public int ErrorLine = -1;
+		public int ErrorLine { get; set; } = -1;
+		public bool CanType { get; set; }
 
 		/// <summary>
 		/// Create a codebox with the specified width and height. The typeable area will
@@ -29,10 +30,13 @@ namespace Emulator.UIComponents
 			gutterWidth = 3;
 			if (height - 2 >= Math.Pow(10, gutterWidth - 1)) 
 				throw new ArgumentException("Too many lines to display line numbers");
+			DefaultForeground = Emulator.EmulatorColors.Text;
+			DefaultBackground = Emulator.EmulatorColors.ControlBackDark;
 
 			textBox = new TextBox(width - 4 - gutterWidth, height - 4);
 			textBox.Position = new Point(gutterWidth + 3, 1);
 			textBox.Parent = this;
+			Cursor.SetPrintAppearance(new Cell(Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark));
 
 			Status = "";
 
@@ -41,6 +45,7 @@ namespace Emulator.UIComponents
 			statusConsole = new ScrollingConsole(width - 4, 2);
 			statusConsole.Position = new Point(1, Height - 3);
 			statusConsole.Parent = this;
+			statusConsole.Cursor.SetPrintAppearance(new Cell(Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark));
 		}
 
 		public string Text
@@ -52,29 +57,40 @@ namespace Emulator.UIComponents
 		{
 			base.Draw(timeElapsed);
 			Clear();
+			// Draw a pointer for the next instruction instruction, if not halted
+			if (cpu.IsHalted == false && cpu.PcLineMap.Count > 0)
+			{
+				var pc = cpu.GetPCValue();
+				var lineIndex = cpu.PcLineMap.ContainsKey(pc) ? cpu.PcLineMap[pc] : Math.Max(cpu.PcLineMap.Max(kv => kv.Value) + 1, textBox.Text.Split("\n").Length);
+				if (cpu.PcLineMap.ContainsKey(pc))
+					textBox.ScrollTo(lineIndex);
+				SetGlyph(Width - 2, lineIndex + 1 - textBox.ScrollOffset, 17);
+				SetGlyph(gutterWidth + 2, lineIndex + 1 - textBox.ScrollOffset, 16);
+			}
 			textBox.Draw(timeElapsed);
 
 			// Draw the gutter and surrounding box
-			DrawBox(new Rectangle(0, 0, Width, Height), new Cell(Color.White, Color.Black, '-'), null, CellSurface.ConnectedLineThin);
-			DrawLine(new Point(gutterWidth + 1, 0), new Point(gutterWidth + 1, textBox.Height), Color.White, Color.Black, 179);
-			DrawLine(new Point(0, textBox.Height), new Point(Width, textBox.Height), Color.White, Color.Black, 196);
+			DrawBox(new Rectangle(0, 0, Width, Height), new Cell(Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark, '-'), null, CellSurface.ConnectedLineThin);
+			DrawLine(new Point(gutterWidth + 1, 0), new Point(gutterWidth + 1, textBox.Height), Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark, 179);
+			DrawLine(new Point(0, textBox.Height), new Point(Width, textBox.Height), Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark, 196);
 			SetGlyph(gutterWidth + 1, 0, 194);
 			SetGlyph(gutterWidth + 1, textBox.Height, 193);
 			SetGlyph(0, textBox.Height, 195);
 			SetGlyph(Width - 1, textBox.Height, 180);
 
 			// Draw Line numbers
-			for(int i = 1; i < textBox.Text.Split("\n").Length + 1; i++)
+			for(int i = 1; i < textBox.Text.Split("\n").Length + 1 && i < textBox.Height; i++)
 			{
 				int y = i;
-				int x = textBox.Position.X - 3 - (int)Math.Log10(i);
-				if (ErrorLine == i)
+				int j = i + textBox.ScrollOffset;
+				int x = textBox.Position.X - 3 - (int)Math.Log10(j);
+				if (ErrorLine == j)
 				{
-					Print(x, y, i.ToString(), Color.Red);
+					Print(x, y, j.ToString(), Color.Red);
 				}
 				else
 				{
-					Print(x, y, i.ToString(), Color.White);
+					Print(x, y, j.ToString(), Emulator.EmulatorColors.Text);
 				}	
 			}
 
@@ -96,15 +112,6 @@ namespace Emulator.UIComponents
 			// Draw Status text
 			statusConsole.Clear();
 			statusConsole.Cursor.Move(2, this.textBox.Height + 1).Print(Status);
-
-			// Draw a pointer for the next instruction instruction, if not halted
-			if (cpu.IsHalted == false && cpu.PcLineMap.Count > 0)
-			{
-				var pc = cpu.GetPCValue();
-				var lineIndex = cpu.PcLineMap.ContainsKey(pc) ? cpu.PcLineMap[pc] : cpu.PcLineMap.Max(kv => kv.Value) + 1;
-				SetGlyph(Width - 2, lineIndex + 1, 17);
-				SetGlyph(gutterWidth + 2, lineIndex + 1, 16);
-			}
 		}
 
 		public override bool ProcessKeyboard(Keyboard info)

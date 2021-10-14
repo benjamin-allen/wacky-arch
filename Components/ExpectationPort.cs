@@ -29,7 +29,7 @@ namespace Components
 					if (word.Value != ExpectedData[0].Value)
 					{
 						// Halt the emulator somehow.
-						string errMessage = $"{Pipe.Name}: Expected {ExpectedData[0].Value}. Got {word.Value}";
+						string errMessage = $"{Name}: Expected {ExpectedData[0].Value}. Got {word.Value}";
 						throw new ComponentException(errMessage, errMessage);
 					}
 

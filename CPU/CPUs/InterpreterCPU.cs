@@ -43,5 +43,13 @@ namespace CPU.CPUs
 				IsHalted = true;
 			}
 		}
+
+		public override void Reset()
+		{
+			base.Reset();
+			ProgramText = "";
+			ProgramBinary = new List<Word>();
+			PcLineMap = new Dictionary<int, int>();
+		}
 	}
 }

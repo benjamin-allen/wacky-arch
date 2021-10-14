@@ -20,8 +20,8 @@ The CPU also contains a Program Counter register to fetch instructions from.
 |x| Shift Left          | SL        | 0001 0-xx vvvv  | X = X << V               | New bits are all 0                                                                                           |
 |x| Shift Right         | SR        | 0001 10xx vvvv  | X = X >> V               | New bits are all 0                                                                                           |
 |x| Shift Right Arith   | SRA       | 0001 11xx vvvv  | X = X >> V               | New bits are all upper bit                                                                                   |
-|x| Rotate Left         | ROL       | 0010 0-xx vvvv  | X = X << V               | New bits take the value of the off-shifted bit                                                               |
-|x| Rotate Right        | ROR       | 0010 1-xx vvvv  | X = X >> V               | New bits take the value of the off-shifted bit                                                               |
+|x| Rotate Left         | RL        | 0010 0-xx vvvv  | X = X << V               | New bits take the value of the off-shifted bit                                                               |
+|x| Rotate Right        | RR        | 0010 1-xx vvvv  | X = X >> V               | New bits take the value of the off-shifted bit                                                               |
 | |                     |           |                 |                          |                                                                                                              |
 |x| Move Register       | MOV       | 0011 xxyy 0000  | X = Y                    |                                                                                                              |
 |x| Swap Register       | SWP       | 0011 xxyy 0001  | X = Y; Y = X             |                                                                                                              |

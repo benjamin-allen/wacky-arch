@@ -25,7 +25,7 @@ namespace Components
 		public int AssignBitwise(int value)
 		{
 			int term = value & ((1 << Size) - 1);
-			_Value = term;
+			_Value = Utilities.Utilities.SignExtend(term, Size - 1);
 			return term;
 		}
 

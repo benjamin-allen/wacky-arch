@@ -14,6 +14,7 @@ namespace Emulator.UIComponents
 		public OutputPort(ExpectationPort port, int width) : base(width, 3)
 		{
 			Port = port;
+			
 		}
 
 		public override void Draw(TimeSpan timeElapsed)
@@ -22,8 +23,8 @@ namespace Emulator.UIComponents
 			Clear();
 
 			// Draw shape outline
-			DrawLine(new Point(0, 0), new Point(Width - 1, 0), Color.White, Color.Black, 205);
-			DrawLine(new Point(0, Height - 1), new Point(Width - 1, Height - 1), Color.White, Color.Black, 205);
+			DrawLine(new Point(0, 0), new Point(Width - 1, 0), Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark, 205);
+			DrawLine(new Point(0, Height - 1), new Point(Width - 1, Height - 1), Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark, 205);
 
 			// Draw expected number and arrow
 			if (Port.ExpectedData != null && Port.ExpectedData.Count > 0)

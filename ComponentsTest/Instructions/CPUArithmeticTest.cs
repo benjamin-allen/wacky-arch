@@ -471,7 +471,7 @@ namespace Test.Instructions
 			insn2.Execute();
 
 			Assert.AreEqual(0b011101110111, cpu.Registers[0].Data.Value);
-			Assert.AreEqual(0b111110101111, cpu.Registers[2].Data.Value);
+			Assert.AreEqual(SignExtend(0b111110101111, Word.Size - 1), cpu.Registers[2].Data.Value);
 		}
 
 
@@ -490,7 +490,7 @@ namespace Test.Instructions
 			insn2.Execute();
 
 			Assert.AreEqual(0b011001100110, cpu.Registers[0].Data.Value);
-			Assert.AreEqual(0b111100100100, cpu.Registers[2].Data.Value);
+			Assert.AreEqual(SignExtend(0b111100100100, Word.Size - 1), cpu.Registers[2].Data.Value);
 		}
 
 
@@ -512,10 +512,21 @@ namespace Test.Instructions
 			insn3.Execute();
 			insn4.Execute();
 
-			Assert.AreEqual(0b110011001100, cpu.Registers[0].Data.Value);
-			Assert.AreEqual(0b101010101010, cpu.Registers[1].Data.Value);
-			Assert.AreEqual(0b111101010100, cpu.Registers[2].Data.Value);
+			Assert.AreEqual(SignExtend(0b110011001100, Word.Size - 1), cpu.Registers[0].Data.Value);
+			Assert.AreEqual(SignExtend(0b101010101010, Word.Size - 1), cpu.Registers[1].Data.Value);
+			Assert.AreEqual(SignExtend(0b111101010100, Word.Size - 1), cpu.Registers[2].Data.Value);
 			Assert.AreEqual(0b000001110000, cpu.Registers[3].Data.Value);
+		}
+
+		[TestMethod]
+		public void TestNotExecution()
+		{
+			cpu.Registers[0].Data.AssignBitwise(0b0000_0000_0100);
+
+			var insn1 = new ArithmeticInstruction(cpu, new Word { Value = 0b0000_0000_1101 });
+			insn1.Execute();
+
+			Assert.AreEqual(SignExtend(0b1111_1111_1011, Word.Size - 1), cpu.Registers[0].Data.Value);
 		}
 	}
 }

@@ -1,0 +1,12 @@
+﻿[
+  {
+    "ChallengeId": 12,
+    "Name": "ROM Repair - Reversi",
+    "Description": "A portion of the ROM is broken and needs to be rewritten. We just don't know how to do it.",
+    "StartingComments": "This was a portion of the ROM that took 5 inputs from the TOP pipe and wrote them in reverse order. Given that there are only 4 registers, we're not sure how that was done.\n\nWhatever solution you come up with, implement it as an infinite loop that read numbers 5-at-a-time, reverses them.",
+    "TopInputData": [ 1, 2, 3, 4, 5, 90, 80, 70, 60, 50, -1, 0, 1, 2, 3, 1245, 1244, 1243, 1242, 1241 ],
+    "BottomInputData": [],
+    "OutputData": [ 5, 4, 3, 2, 1, 50, 60, 70, 80, 90, 3, 2, 1, 0, -1, 1241, 1242, 1243, 1244, 1245 ],
+    "Order":  40
+  }
+]

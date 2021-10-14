@@ -17,6 +17,9 @@ namespace Emulator.UIComponents
 		{
 			Port = port;
 			this.stackHeight = stackHeight;
+
+			//DefaultForeground = Emulator.EmulatorColors.Text;
+			//DefaultBackground = Emulator.EmulatorColors.ControlBackDark;
 		}
 
 		public override void Draw(TimeSpan update)
@@ -25,10 +28,10 @@ namespace Emulator.UIComponents
 			Clear();
 
 			// Draw shape outline
-			DrawLine(new Point(0, 0), new Point(0, Height - 1), Color.White, Color.Black, 186);
-			DrawLine(new Point(5, 0), new Point(5, stackHeight - 1), Color.White, Color.Black, 186);
-			DrawLine(new Point(0, Height - 1), new Point(Width - 1, Height - 1), Color.White, Color.Black, 205);
-			DrawLine(new Point(5, stackHeight - 1), new Point(Width - 1, stackHeight - 1), Color.White, Color.Black, 205);
+			DrawLine(new Point(0, 0), new Point(0, Height - 1), Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark, 186);
+			DrawLine(new Point(5, 0), new Point(5, stackHeight - 1), Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark, 186);
+			DrawLine(new Point(0, Height - 1), new Point(Width - 1, Height - 1), Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark, 205);
+			DrawLine(new Point(5, stackHeight - 1), new Point(Width - 1, stackHeight - 1), Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark, 205);
 			SetGlyph(0, Height - 1, 200);
 			SetGlyph(5, stackHeight - 1, 200);
 
@@ -37,6 +40,18 @@ namespace Emulator.UIComponents
 			{
 				Print(Width - 1 - 3, Height - 2, String.Format("{0,4:###0}", Port.CurrentData.Value));
 				SetGlyph(2, Height - 2, 26);
+			}
+			else
+			{
+				// if there's a written value, show it in the input
+				var data = Port.Pipe.Read(out bool didRead);
+				if (didRead)
+				{
+					// write it back real quick, also display it
+					Port.Pipe.Write(data.Value);
+					Print(Width - 1 - 3, Height - 2, String.Format("{0,4:###0}", data.Value));
+					SetGlyph(2, Height - 2, 26);
+				}
 			}
 
 			// Draw other numbers

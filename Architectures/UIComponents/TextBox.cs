@@ -6,17 +6,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SadConsole.Input;
+using System.Linq;
 
 namespace Emulator.UIComponents
 {
 	public class TextBox : ScrollingConsole
 	{
 		private int width, height;
-		private List<string> text; 
+		private List<string> text;
 		public string Text 
 		{
 			get { return string.Join("\n", text); }
 		}
+		public int ScrollOffset { get; set; }
 
 		private int blinkTimeMs;
 		private int timeSinceBlinkSwitchMs;
@@ -31,12 +33,16 @@ namespace Emulator.UIComponents
 		  Keys.D0, Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9,
 		  Keys.NumPad0, Keys.NumPad1, Keys.NumPad2, Keys.NumPad3, Keys.NumPad4,
 		  Keys.NumPad5, Keys.NumPad6, Keys.NumPad7, Keys.NumPad8, Keys.NumPad9,
-		  Keys.Space };
+		  Keys.Space, Keys.OemPeriod, Keys.OemPlus, Keys.OemMinus, Keys.OemPipe, Keys.OemOpenBrackets, Keys.OemOpenBrackets,
+		  Keys.OemCloseBrackets, Keys.OemTilde, Keys.OemQuestion, Keys.OemComma, Keys.OemSemicolon, Keys.OemQuotes};
 
 		public TextBox(int width, int height) : base(width, height)
 		{
 			this.width = width;
 			this.height = height;
+
+
+			Cursor.SetPrintAppearance(new Cell(Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark));
 
 			cursor = new Point(0, 0);
 			cursorGlyph = new ColoredGlyph(0, Color.Green, Color.Green);
@@ -53,9 +59,9 @@ namespace Emulator.UIComponents
 			Clear();
 			timeSinceBlinkSwitchMs += (int)timeElapsed.TotalMilliseconds;
 
-			for (int i = 0; i < text.Count; i++)
+			for (int i = 0; i < Height - 1 && i < text.Count; i++)
 			{
-				Print(0, i, text[i], Color.White, Color.Black);
+				Print(0, i, text[i+ScrollOffset], Emulator.EmulatorColors.Text, Emulator.EmulatorColors.ControlBackDark);
 			}
 
 			if (timeSinceBlinkSwitchMs >= blinkTimeMs)
@@ -65,7 +71,7 @@ namespace Emulator.UIComponents
 			}
 			if (showCursor)
 			{ 
-				Print(cursor.X, cursor.Y, cursorGlyph);
+				Print(cursor.X, cursor.Y-ScrollOffset, cursorGlyph);
 			}
 		}
 
@@ -81,6 +87,22 @@ namespace Emulator.UIComponents
 			return false;
 		}
 
+		public void ScrollTo(int line)
+		{
+			if (line < ScrollOffset)
+			{
+				ScrollOffset = line;
+				cursor.Y = line;
+				showCursor = false;
+			}
+			else if (line > Height + ScrollOffset - 2)
+			{
+				ScrollOffset = line - Height + 2;
+				cursor.Y = line;
+				showCursor = false;
+			}
+		}
+
 		private bool MoveCursor(SadConsole.Input.Keyboard info)
 		{
 			if (info.IsKeyPressed(Keys.Up))
@@ -88,7 +110,11 @@ namespace Emulator.UIComponents
 				if (cursor.Y == 0)
 					cursor.X = 0;
 				if (cursor.Y > 0)
+				{
 					cursor.Y -= 1;
+					if (cursor.Y < ScrollOffset)
+						ScrollOffset -= 1;
+				}
 				if (cursor.X > text[cursor.Y].Length)
 					cursor.X = text[cursor.Y].Length;
 				return true;
@@ -98,7 +124,11 @@ namespace Emulator.UIComponents
 				if (cursor.Y == text.Count - 1)
 					cursor.X = text[cursor.Y].Length;
 				if (cursor.Y < text.Count - 1)
+				{
 					cursor.Y += 1;
+					if (cursor.Y > ScrollOffset + Height - 2)
+						ScrollOffset += 1;
+				}
 				if (cursor.X > text[cursor.Y].Length)
 					cursor.X = text[cursor.Y].Length;
 				return true;
@@ -132,21 +162,8 @@ namespace Emulator.UIComponents
 	
 		private bool TypeCharacter(SadConsole.Input.Keyboard info)
 		{
+			
 			bool returnValue = false;
-			// need special handling for # and @
-			if (info.IsKeyDown(Keys.LeftShift) || info.IsKeyDown(Keys.RightShift))
-			{
-				if (info.IsKeyPressed(Keys.D3))
-				{
-					insertCharacter("#");
-					return true;
-				}
-				if (info.IsKeyPressed(Keys.D2))
-				{
-					insertCharacter("@");
-					return true;
-				}
-			}
 
 			// Refactor to use info.KeysPressed. Durh.
 			foreach (AsciiKey key in info.KeysPressed)
@@ -159,14 +176,16 @@ namespace Emulator.UIComponents
 
 				if (key.Key == Keys.Enter)
 				{
-					if (text.Count < height - 1)
+					string fullLine = text[cursor.Y];
+					text[cursor.Y] = fullLine.Substring(0, cursor.X);
+					text.Insert(cursor.Y + 1, fullLine.Substring(cursor.X));
+					cursor.Y += 1;
+					cursor.X = 0;
+					returnValue = true;
+					if (text.Count >= height)
 					{
-						string fullLine = text[cursor.Y];
-						text[cursor.Y] = fullLine.Substring(0, cursor.X);
-						text.Insert(cursor.Y + 1, fullLine.Substring(cursor.X));
-						cursor.Y += 1;
-						cursor.X = 0;
-						returnValue = true;
+						// scroll the console until the cursor is in view
+						ScrollOffset += 1;
 					}
 				}
 
@@ -180,9 +199,13 @@ namespace Emulator.UIComponents
 						text[cursor.Y - 1] = text[cursor.Y - 1] + text[cursor.Y];
 						text.RemoveAt(cursor.Y);
 						cursor.Y -= 1;
+						if (ScrollOffset > 0)
+						{
+							ScrollOffset -= 1;
+						}
 						returnValue = true;
 					}
-					if (cursor.X < text[cursor.Y].Length)
+					else if (cursor.X < text[cursor.Y].Length)
 					{
 						text[cursor.Y] = text[cursor.Y].Substring(0, cursor.X - 1) + text[cursor.Y].Substring(cursor.X);
 						cursor.X -= 1;
@@ -204,6 +227,10 @@ namespace Emulator.UIComponents
 					{
 						text[cursor.Y] = text[cursor.Y] + text[cursor.Y + 1];
 						text.RemoveAt(cursor.Y + 1);
+						if (ScrollOffset > 0)
+						{
+							ScrollOffset -= 1;
+						}
 						returnValue = true;
 					}
 					else
