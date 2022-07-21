@@ -1,9 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Utilities.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Components;
+using static WackyArch.Utilities.Utilities;
+using WackyArch.Components;
 
 namespace Test.Other
 {

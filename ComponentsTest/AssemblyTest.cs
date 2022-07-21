@@ -1,23 +1,23 @@
-﻿using static CPU.Assembler;
-using Components;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using CPU;
-using CPU.CPUs;
+using WackyArch.CPUs;
+using WackyArch.Components;
+using WackyArch.Assemblers;
+using WackyArch.Utilities;
+using WackyArch.Instructions;
 
 namespace Test
 {
-	[TestClass]
+    [TestClass]
 	public class AssemblyTest
 	{
-		private CPU.CPU cpu;
+		private CPU cpu;
 
 		[TestInitialize]
 		public void TestInitialize()
 		{
-			cpu = new CPU.CPU();
+			cpu = new CPU();
 		}
 
 
@@ -38,7 +38,7 @@ namespace Test
 				"SUBC 1",
 				"JGZ @FIB");
 
-			List<Word> binary = Assemble(cpu, program, out _);
+			List<Word> binary = Assembler.Assemble(cpu, program, out _);
 
 			Assert.AreEqual(0b1111_0000_0001, binary[0].Value & 0xFFF);
 			Assert.AreEqual(0b0011_0011_0000, binary[1].Value & 0xFFF);
@@ -69,7 +69,7 @@ namespace Test
 				"NEG R2",
 				"NEG R2");
 
-			List<Word> binary = Assemble(cpu, program, out _);
+			List<Word> binary = Assembler.Assemble(cpu, program, out _);
 
 			Assert.AreEqual(0xF0A, binary[0].Value & 0xFFF);
 			Assert.AreEqual(0x330, binary[1].Value & 0xFFF);
@@ -88,7 +88,7 @@ namespace Test
 
 
 			int[] reg0States = new int[] { 0, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
-			int[] reg1States = new int[] { 0, 0, 0, 15, 15, 15, 15, 15, 15, 15, 0, 0, 0, 0 };
+			int[] reg1States = new int[] { 0, 0, 0, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 };
 			int[] reg2States = new int[] { 0, 0, 0, 0, 15, 25, 15, 5, 10, 150, 10, 10, -10, 10 };
 			int[] constStates = new int[] { 10, 10, 15, 15, 15, 15, 15, 15, 15, 15, 15, 0, 0, 0 };
 

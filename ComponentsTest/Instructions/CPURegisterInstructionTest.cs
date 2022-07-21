@@ -1,21 +1,19 @@
-﻿using Components;
-using CPU.Instructions;
+﻿using WackyArch.Components;
+using WackyArch.Instructions;
+using WackyArch.CPUs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Test.Instructions
 {
-	[TestClass]
+    [TestClass]
 	public class CPURegisterInstructionTest
 	{
-		private CPU.CPU cpu;
+		private CPU cpu;
 
 		[TestInitialize]
 		public void TestInitialize()
 		{
-			cpu = new CPU.CPU();
+			cpu = new CPU();
 		}
 
 

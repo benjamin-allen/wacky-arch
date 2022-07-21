@@ -1,10 +1,8 @@
-using Components;
+using WackyArch.Components;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Diagnostics;
-using static Utilities.Utilities;
-using System.Drawing;
-using System.Runtime.CompilerServices;
+using static WackyArch.Utilities.Utilities;
 
 namespace Test.Components
 {

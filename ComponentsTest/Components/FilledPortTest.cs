@@ -1,13 +1,11 @@
-﻿using Components;
+﻿using WackyArch.Components;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Test.Components
 {
-	[TestClass]
+    [TestClass]
 	public class FilledPortTest
 	{
 		private FilledPort filledPort;

@@ -1,24 +1,22 @@
-﻿using Components;
-using CPU.Instructions;
+﻿using WackyArch.Components;
+using WackyArch.Instructions;
+using WackyArch.CPUs;
+using static WackyArch.Utilities.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using static Utilities.Utilities;
-using System.Collections.Generic;
-using System.Reflection.PortableExecutable;
-using System.Text;
 
 namespace Test.Instructions
 {
 	[TestClass]
 	public class CPUArithmeticTest
 	{
-		private CPU.CPU cpu;
+		private CPU cpu;
 
 
 		[TestInitialize]
 		public void TestInitialize()
 		{
-			cpu = new CPU.CPU();
+			cpu = new CPU();
 		}
 
 
@@ -270,9 +268,9 @@ namespace Test.Instructions
 			insn1.Execute();
 			insn2.Execute();
 			Assert.AreEqual(2, cpu.Registers[0].Data.Value);
-			Assert.AreEqual(2, cpu.Registers[1].Data.Value);
+			Assert.AreEqual(5, cpu.Registers[1].Data.Value);
 			Assert.AreEqual(-4, cpu.Registers[2].Data.Value);
-			Assert.AreEqual(0, cpu.Registers[3].Data.Value);
+			Assert.AreEqual(-2, cpu.Registers[3].Data.Value);
 		}
 
 
@@ -286,7 +284,6 @@ namespace Test.Instructions
 			int[] regs1 = new int[n];
 			int[] regs2 = new int[n];
 			int[] quotients = new int[n];
-			int[] remainders = new int[n];
 			for (int i = 0; i < n; i++)
 			{
 				dividends[i] = r.Next((Word.Min / 2) + 1, (Word.Max / 2) - 1);
@@ -302,7 +299,6 @@ namespace Test.Instructions
 					regs2[i] = (regs2[i] + 1) % 4;
 				}
 				quotients[i] = dividends[i] / divisors[i];
-				remainders[i] = dividends[i] % divisors[i];
 			}
 
 			for (int i = 0; i < n; i++)
@@ -317,7 +313,7 @@ namespace Test.Instructions
 				insn.Execute();
 
 				Assert.AreEqual(quotients[i], cpu.Registers[regs1[i]].Data.Value);
-				Assert.AreEqual(remainders[i], cpu.Registers[regs2[i]].Data.Value);
+				Assert.AreEqual(divisors[i], cpu.Registers[regs2[i]].Data.Value);
 			}
 		}
 
@@ -365,7 +361,7 @@ namespace Test.Instructions
 				{
 					regs2[i] = (regs2[i] + 1) % 4;
 				}
-				congruences[i] = numbers[i] % moduli[i];
+				congruences[i] = ((numbers[i] % moduli[i]) + moduli[i]) % moduli[i];  // "smart mod, dammit"
 			}
 
 			for (int i = 0; i < n; i++)

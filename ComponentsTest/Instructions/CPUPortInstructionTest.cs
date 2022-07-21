@@ -1,16 +1,14 @@
-﻿using Components;
-using CPU.Instructions;
+﻿using WackyArch.Components;
+using WackyArch.CPUs;
+using WackyArch.Instructions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Test.Instructions
 {
 	[TestClass]
 	public class CPUPortInstructionTest
 	{
-		public CPU.CPU cpu;
+		public CPU cpu;
 		public Pipe input;
 		public Pipe output;
 
@@ -23,7 +21,7 @@ namespace Test.Instructions
 			Port port0 = new Port(input, "INPUT");
 			Port port1 = new Port(output, "OUTPUT");
 
-			cpu = new CPU.CPU(new Port[] { port0, port1 });
+			cpu = new CPU(new Port[] { port0, port1 });
 		}
 
 		[TestMethod]

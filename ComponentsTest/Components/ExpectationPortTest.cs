@@ -1,12 +1,11 @@
-﻿using Components;
+﻿using WackyArch.Components;
+using WackyArch.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Test.Components
 {
-	[TestClass]
+    [TestClass]
 	public class ExpectationPortTest
 	{
 		private ExpectationPort expectationPort;

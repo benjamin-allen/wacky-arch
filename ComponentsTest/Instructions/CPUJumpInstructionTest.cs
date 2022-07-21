@@ -1,24 +1,20 @@
-﻿using Components;
-using CPU.Instructions;
+﻿using WackyArch.Components;
+using WackyArch.CPUs;
+using WackyArch.Instructions;
+using static WackyArch.Utilities.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Utilities.Utilities;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
 
 namespace Test.Instructions
 {
 	[TestClass]
 	public class CPUJumpInstructionTest
 	{
-		private CPU.CPU cpu;
+		private CPU cpu;
 
 		[TestInitialize]
 		public void TestInitialize()
 		{
-			cpu = new CPU.CPU();
+			cpu = new CPU();
 		}
 
 		[TestMethod]

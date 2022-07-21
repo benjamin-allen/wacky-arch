@@ -1,13 +1,9 @@
-﻿using Components;
+﻿using WackyArch.Components;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace Test.Components
 {
-	[TestClass]
+    [TestClass]
 	public class PipeTest
 	{
 		[TestMethod]
