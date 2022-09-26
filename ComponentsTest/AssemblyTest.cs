@@ -269,5 +269,45 @@ namespace Test
                 }
             }
         }
+
+		[TestMethod]
+		public void FunctionTest()
+		{
+			var program = String.Join(Environment.NewLine,
+				"addc 0",
+				"deffunc TEST-FUNCTION",
+				"addc 0",
+				"",
+				"addc 0",
+				"endfunc");
+
+			var cpu = new InterpreterCPU();
+			var binary = Assembler.Assemble(cpu, program, out var pcLineMap);
+
+			Assert.AreEqual(0xA00, binary[0].Value & 0xFFF);
+			Assert.AreEqual(0x30D, binary[1].Value & 0xFFF);
+			Assert.AreEqual('T', binary[2].Value & 0xFFF);
+			Assert.AreEqual('E', binary[3].Value & 0xFFF);
+			Assert.AreEqual('S', binary[4].Value & 0xFFF);
+			Assert.AreEqual('T', binary[5].Value & 0xFFF);
+			Assert.AreEqual('-', binary[6].Value & 0xFFF);
+			Assert.AreEqual('F', binary[7].Value & 0xFFF);
+			Assert.AreEqual('U', binary[8].Value & 0xFFF);
+			Assert.AreEqual('N', binary[9].Value & 0xFFF);
+			Assert.AreEqual('C', binary[10].Value & 0xFFF);
+			Assert.AreEqual('T', binary[11].Value & 0xFFF);
+			Assert.AreEqual('I', binary[12].Value & 0xFFF);
+			Assert.AreEqual('O', binary[13].Value & 0xFFF);
+			Assert.AreEqual('N', binary[14].Value & 0xFFF);
+			Assert.AreEqual(0xA00, binary[15].Value & 0xFFF);
+			Assert.AreEqual(0xA00, binary[16].Value & 0xFFF);
+			Assert.AreEqual(0x300, binary[17].Value & 0xFFF);
+
+			Assert.AreEqual(0, pcLineMap[0]);
+			Assert.AreEqual(1, pcLineMap[1]);
+			Assert.AreEqual(2, pcLineMap[15]);
+			Assert.AreEqual(4, pcLineMap[16]);
+			Assert.AreEqual(5, pcLineMap[17]);
+		}
 	}
 }

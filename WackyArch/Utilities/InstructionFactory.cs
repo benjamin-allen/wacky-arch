@@ -15,8 +15,9 @@ namespace WackyArch.Utilities
                 case 0:
                     return new ArithmeticInstruction(cpu, word);
                 case 1:
-                case 2:
                     return new ShiftInstruction(cpu, word);
+                case 2:
+                    return new FunctionInstruction(cpu, word);
                 case 3:
                     return new RegisterInstruction(cpu, word);
                 case 4:

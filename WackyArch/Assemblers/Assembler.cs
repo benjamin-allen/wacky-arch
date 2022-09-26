@@ -94,6 +94,21 @@ namespace WackyArch.Assemblers
                 {
 					result = AssembleInterrupt(tokens, i);
                 }
+				else if (Tokens.CheckTokenMatch(tokens[0], Tokens.FunctionTokens))
+				{
+					// functions are weird and hard.
+					var resultWords = AssembleFunction(tokens, i);
+					int? nextDefFunc = assemblyLines.Where((value, index) => index > i && value.Contains("DEF")).Select((value, index) => index).FirstOrDefault();
+					int? nextEndFunc = assemblyLines.Where((value, index) => index > i && value.Contains("END")).Select((value, index) => index).FirstOrDefault();
+					if (nextEndFunc == null || (nextDefFunc.HasValue && nextDefFunc < nextEndFunc))
+					{
+						throw new AssemblerException("No matching ENDFUNC for this DEFFUNC", i, string.Join(" ", tokens), "No ENDFUNC found.");
+					}
+					pcTextLineMap.Add(currentAddress, i);
+					currentAddress += resultWords.Count;
+					words.AddRange(resultWords);
+					continue;
+				}
 				else
 				{
 					throw new NotImplementedException();
@@ -308,6 +323,26 @@ namespace WackyArch.Assemblers
 			return new Word { Value = wordValue };
         }
 
+		private static List<Word> AssembleFunction(List<string> tokens, int i)
+		{
+            ValidateFunction(tokens, i);
+
+			switch (Tokens.GetCanonicalToken(tokens[0], Tokens.FunctionTokens))
+			{
+				case "DEFFUNC":
+					var wordList = new List<Word> { new Word { Value = 0b0011_0000_0000 + tokens[1].Length } };
+					foreach (char x in tokens[1])
+					{
+						wordList.Add(new Word { Value = (int)x });
+					}
+					return wordList;
+				case "ENDFUNC":
+					return new List<Word> { new Word { Value = 0b0011_0000_0000 } };
+				default:
+					throw new NotImplementedException();
+			}
+		}
+
 		private static void ValidateLongAType(List<string> tokens, int i)
 		{
 			string line = string.Join(" ", tokens);
@@ -403,6 +438,23 @@ namespace WackyArch.Assemblers
 				throw new AssemblerException($"{tokens[1]} is not a valid interrupt.", i, line, $"Not an interrupt: {tokens[1]}");
             }
         }
+
+		private static void ValidateFunction(List<string> tokens, int i)
+		{
+			string line = string.Join(" ", tokens);
+			if (Tokens.GetCanonicalToken(tokens[0], Tokens.FunctionTokens) == "DEFFUNC")
+			{
+				tokens.ValidateTokenArraySize(i, 2, "DEFFUNC NAME");
+				if (tokens[1].Length > 255)
+				{
+					throw new AssemblerException($"{tokens[1]} is too long of a name.", i, line, $"Name too long: {tokens[1]}");
+				}
+			}
+			else
+			{
+				tokens.ValidateTokenArraySize(i, 1, "ENDFUNC");
+			}
+		}
 
 		private static int GetRegisterNumber(string token)
 		{

@@ -23,7 +23,7 @@
 			};
 			MTypeMnemonicTokens = new List<Token>
 			{
-				ShiftLeft, ShiftRight, ShiftRightArithmetic, RotateLeft, RotateRight
+				ShiftLeft, ShiftRight, ShiftRightArithmetic
 			};
 			PTypeMnemonicTokens = new List<Token>
 			{
@@ -33,11 +33,15 @@
 			{ 
 				Interrupt, Unlock, Halt
 			};
+			FunctionTokens = new List<Token>
+			{
+				DefineFunction, EndFunction
+			};
 
 			MnemonicTokens = LongATypeMnemonicTokens.Concat(ShortATypeMnemonicTokens)
 							.Concat(PTypeMnemonicTokens).Concat(MTypeMnemonicTokens)
 							.Concat(CTypeMnemonicTokens).Concat(JTypeMnemonicTokens)
-							.Concat(InterruptTokens).ToList();
+							.Concat(InterruptTokens).Concat(FunctionTokens).ToList();
 		}
 
 		// All mnemonics are in uppercase. Incoming text will be converted to uppercase.
@@ -56,8 +60,9 @@
 		public static readonly Token ShiftLeft = new Token("SL", "SL,SHL,SHIFTLEFT");
 		public static readonly Token ShiftRight = new Token("SR", "SR,SHR,SHIFTRIGHT");
 		public static readonly Token ShiftRightArithmetic = new Token("SRA", "SRA,SHRA,SHIFTRIGHTA");
-		public static readonly Token RotateLeft = new Token("RL", "RL,ROL,ROTL,ROTATELEFT");
-		public static readonly Token RotateRight = new Token("RR", "RR,ROR,ROTR,ROTATERIGHT");
+
+		public static readonly Token DefineFunction = new Token("DEFFUNC", "DEFFUNC,DEFINEFUNC,DEFINEFUNCTION,DEFFUNCTION");
+		public static readonly Token EndFunction = new Token("ENDFUNC", "ENDFUNC, ENDFUNCTION");
 
 		public static readonly Token Move = new Token("MOV", "MOV,MOVE");
 		public static readonly Token Swap = new Token("SWP", "SWP,SWAP");
@@ -91,6 +96,7 @@
 		public static readonly List<Token> MTypeMnemonicTokens;
 		public static readonly List<Token> PTypeMnemonicTokens;
 		public static readonly List<Token> InterruptTokens;
+		public static readonly List<Token> FunctionTokens;
 		#endregion
 
 		#region Registers

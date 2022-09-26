@@ -70,6 +70,7 @@ namespace WackyArch.Instructions
 					Cpu.Registers[Y].Data.AssignBitwise(~Cpu.Registers[Y].Data.Value);
 					break;
 				case 0xF:
+					Cpu.IncrementPC = true;
 					break; // No-op
 				default:
 					throw new InvalidOperationException("Invalid FuncCode!");

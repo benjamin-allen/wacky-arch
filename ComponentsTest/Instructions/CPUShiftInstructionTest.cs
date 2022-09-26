@@ -61,35 +61,5 @@ namespace Test.Instructions
 			shra.Execute();
 			Assert.AreEqual(SignExtend(0b1111_0010_1110, 11), cpu.Registers[3].Data.Value);
 		}
-
-
-		[TestMethod]
-		public void TestRotateLeft()
-		{
-			var rotl = new ShiftInstruction(cpu, new Word { Value = 0b0010_0000_0011 });
-			cpu.Registers[0].Data.Value = 0b1010_0000_1110;
-			rotl.Execute();
-			Assert.AreEqual(0b0000_0111_0101, cpu.Registers[0].Data.Value);
-
-			rotl.Execute();
-			rotl.Execute();
-			Assert.AreEqual(SignExtend(0b1101_0100_0001, 11), cpu.Registers[0].Data.Value);
-		}
-
-
-		[TestMethod]
-		public void TestRotateRight()
-		{
-			var rotr = new ShiftInstruction(cpu, new Word { Value = 0b0010_1101_0010 });
-			cpu.Registers[1].Data.Value = 0b1011_0100_1010;
-			rotr.Execute();
-			Assert.AreEqual(SignExtend(0b1010_1101_0010, 11), cpu.Registers[1].Data.Value);
-
-			rotr.Execute();
-			Assert.AreEqual(SignExtend(0b1010_1011_0100, 11), cpu.Registers[1].Data.Value);
-
-			rotr.Execute();
-			Assert.AreEqual(SignExtend(0b0010_1010_1101, 11), cpu.Registers[1].Data.Value);
-		}
 	}
 }
