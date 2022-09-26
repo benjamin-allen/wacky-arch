@@ -73,6 +73,7 @@ namespace WackyArch.CPUs
 
 			// Reset PC
 			PC.Value = 0;
+			IncrementPC = true;
 
 			// Unset IsHalted
 			IsHalted = false;

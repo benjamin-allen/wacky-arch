@@ -90,6 +90,10 @@ namespace WackyArch.Assemblers
 					// P type
 					result = AssemblePType(tokens, i, cpu);
 				}
+				else if (Tokens.CheckTokenMatch(tokens[0], Tokens.InterruptTokens))
+                {
+					result = AssembleInterrupt(tokens, i);
+                }
 				else
 				{
 					throw new NotImplementedException();
@@ -286,6 +290,24 @@ namespace WackyArch.Assemblers
 			return new Word { Value = wordValue };
 		}
 
+		private static Word AssembleInterrupt(List<string> tokens, int i)
+        {
+			ValidateInterrupt(tokens, i);
+			int wordValue;
+
+			switch (Tokens.GetCanonicalToken(tokens[1], Tokens.InterruptTokens))
+            {
+				case "UNLOCK":
+					wordValue = 0b0100_1111_0000; break;
+				case "HALT":
+					wordValue = 0b0100_1111_1111; break;
+				default:
+					throw new NotImplementedException();
+            }
+
+			return new Word { Value = wordValue };
+        }
+
 		private static void ValidateLongAType(List<string> tokens, int i)
 		{
 			string line = string.Join(" ", tokens);
@@ -356,7 +378,7 @@ namespace WackyArch.Assemblers
 			tokens.ValidateTokenArraySize(i, 3, "MNEMONIC RX PORT");
 			if(!Tokens.CheckTokenMatch(tokens[1], Tokens.RegisterTokens))
 			{
-				throw new AssemblerException($"{tokens[1]} is not a register name.", i, line, $"Not a number: {tokens[2]}");
+				throw new AssemblerException($"{tokens[1]} is not a register name.", i, line, $"Not a register: {tokens[1]}");
 			}
 
 			string portName = tokens[2].ToUpper();
@@ -366,6 +388,21 @@ namespace WackyArch.Assemblers
 				throw new AssemblerException($"{portName} is not a port name.", i, line, $"Not a port: {portName}");
 			}
 		}
+
+		private static void ValidateInterrupt(List<string> tokens, int i)
+        {
+			string line = string.Join(" ", tokens);
+			tokens.ValidateTokenArraySize(i, 2, "INT INTERRUPT");
+            if (!Tokens.CheckTokenMatch(tokens[1], Tokens.InterruptTokens))
+            {
+				throw new AssemblerException($"{tokens[1]} is not a valid interrupt.", i, line, $"Not an interrupt: {tokens[1]}");
+            }
+
+			if (Tokens.GetCanonicalToken(tokens[1], Tokens.InterruptTokens) == Tokens.Interrupt.Canonical)
+            {
+				throw new AssemblerException($"{tokens[1]} is not a valid interrupt.", i, line, $"Not an interrupt: {tokens[1]}");
+            }
+        }
 
 		private static int GetRegisterNumber(string token)
 		{

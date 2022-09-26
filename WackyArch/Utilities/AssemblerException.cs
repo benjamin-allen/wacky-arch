@@ -10,7 +10,7 @@
 		/// </summary>
 		public string ShortMessage { get; set; }
 
-		public AssemblerException(string message, int lineNumber, string lineText, string shortMessage = null) : base(message)
+		public AssemblerException(string message, int lineNumber, string lineText, string shortMessage = "") : base(message)
 		{
 			LineNumber = lineNumber;
 			LineText = lineText;

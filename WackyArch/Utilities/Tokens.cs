@@ -29,10 +29,15 @@
 			{
 				Read, Write
 			};
+			InterruptTokens = new List<Token>
+			{ 
+				Interrupt, Unlock, Halt
+			};
 
 			MnemonicTokens = LongATypeMnemonicTokens.Concat(ShortATypeMnemonicTokens)
 							.Concat(PTypeMnemonicTokens).Concat(MTypeMnemonicTokens)
-							.Concat(CTypeMnemonicTokens).Concat(JTypeMnemonicTokens).ToList();
+							.Concat(CTypeMnemonicTokens).Concat(JTypeMnemonicTokens)
+							.Concat(InterruptTokens).ToList();
 		}
 
 		// All mnemonics are in uppercase. Incoming text will be converted to uppercase.
@@ -61,6 +66,10 @@
 		public static readonly Token Read = new Token("READ", "READ");
 		public static readonly Token Write = new Token("WRITE", "WRITE");
 
+		public static readonly Token Interrupt = new Token("INT", "INT,INTERRUPT");
+		public static readonly Token Unlock = new Token("UNLOCK", "UNLOCK");
+		public static readonly Token Halt = new Token("HALT", "HALT");
+
 		public static readonly Token Jump = new Token("JMP", "JMP,JUMP");
 		public static readonly Token JumpIfZero = new Token("JEZ", "JEZ,JUMPIFZERO");
 		public static readonly Token JumpIfGreater = new Token("JGZ", "JGZ,JUMPIFGREATER");
@@ -81,6 +90,7 @@
 		public static readonly List<Token> JTypeMnemonicTokens;
 		public static readonly List<Token> MTypeMnemonicTokens;
 		public static readonly List<Token> PTypeMnemonicTokens;
+		public static readonly List<Token> InterruptTokens;
 		#endregion
 
 		#region Registers

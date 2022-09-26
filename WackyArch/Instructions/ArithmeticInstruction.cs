@@ -38,7 +38,7 @@ namespace WackyArch.Instructions
 					// Divide
 					if(Cpu.Registers[Y].Data.Value == 0)
 					{
-						throw new DivideByZeroException();
+						throw new ComponentException($"Division by zero: R{X}/R{Y}", "Division by zero");
 					}
 
 					int y = Cpu.Registers[Y].Data.Value; 

@@ -6,6 +6,7 @@ using WackyArch.Components;
 using WackyArch.Assemblers;
 using WackyArch.Utilities;
 using WackyArch.Instructions;
+using System.Linq;
 
 namespace Test
 {
@@ -244,5 +245,29 @@ namespace Test
 			Assert.AreEqual(7, pcLineMap[6]);
 			Assert.AreEqual(10, pcLineMap[7]);
 		}
+
+        [TestMethod]
+		public void InterruptTest()
+        {
+			foreach (var interruptType in Enum.GetValues(typeof(InterruptType)).Cast<InterruptType>())
+            {
+				var program = $"INT {Enum.GetName(typeof(InterruptType), interruptType)}";
+				var cpu = new InterpreterCPU();
+				var binary = Assembler.Assemble(cpu, program, out var pcLineMap);
+
+				Assert.AreEqual(pcLineMap[0], 0);
+                Assert.AreEqual(binary[0].Value, 0b0100_1111_0000 + (int)interruptType);
+
+				cpu.Load(program);
+				try
+                {
+					cpu.Cycle();
+                }
+				catch (Interrupt i)
+                {
+					Assert.AreEqual(i.InterruptType, interruptType);
+                }
+            }
+        }
 	}
 }

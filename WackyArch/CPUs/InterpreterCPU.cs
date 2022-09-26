@@ -22,10 +22,12 @@ namespace WackyArch.CPUs
 			ProgramText = programText;
 			ProgramBinary = Assembler.Assemble(this, ProgramText, out var pcLineMap);
 			PcLineMap = pcLineMap;
+			IsHalted = true;
 		}
 
 		public override void Cycle()
 		{
+			IsHalted = false;
 			// Is our PC within executable program? If so, execute the next instruction.
 			if (GetPCValue() < ProgramBinary.Count)
 			{

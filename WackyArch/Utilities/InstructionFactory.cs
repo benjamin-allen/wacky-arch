@@ -20,7 +20,7 @@ namespace WackyArch.Utilities
                 case 3:
                     return new RegisterInstruction(cpu, word);
                 case 4:
-                    return new PortInstruction(cpu, word);
+                    return new IOInstruction(cpu, word);
                 case 5:
                 case 6:
                 case 7:
