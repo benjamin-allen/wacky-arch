@@ -13,43 +13,62 @@ namespace Test.Instructions
     [TestClass]
     public class CPUFunctionInstructionTest
     {
-        public CPU cpu;
+        public StackCPU cpu;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            cpu = new CPU(new WackyArch.Components.Port[] { });
+            cpu = new StackCPU();
         }
 
         [TestMethod]
-        public void TestDefFuncInstruction()
+        public void TestDefFuncEndFuncInstruction()
         {
-            // THIS TEST FAILS RIGHT NOW B/C A NORMAL CPU DOESN'T DO ANYTHING WITH FUNCTION INSNs
+            var programBinary = new List<int> { 0x302, 'F', '0', 0x00F, 0x00F, 0x300 };
+            cpu.ProgramBinary = programBinary.Select(x => new Word { Value = x }).ToList();
 
+            Assert.AreEqual(0, cpu.GetPCValue());
+            Assert.AreEqual(0, cpu.GetPCOfNthFunction(0));
+            cpu.Cycle();
+            Assert.AreEqual(3, cpu.GetPCValue());
+            Assert.AreEqual(0, cpu.GetPCOfNthFunction(0));
 
-            var noop = new ArithmeticInstruction(cpu, new Word { Value = 0x00F });
-            noop.Execute();
+            cpu.Cycle();
+            Assert.AreEqual(4, cpu.GetPCValue());
+            cpu.Cycle();
+            Assert.AreEqual(5, cpu.GetPCValue());
+            cpu.Cycle();
+            Assert.AreEqual(6, cpu.GetPCValue());
+
+            cpu.Cycle();
+            Assert.AreEqual(true, cpu.IsHalted);
+        }
+
+        [TestMethod]
+        public void TestCallAndReturn()
+        {
+            var programBinary = new List<int> { 0x3C1, 0x00F, 0x302, 'F', '0', 0xA01, 0x300, 0x302, 'F', '1', 0xA01, 0x3F0 };
+            cpu.ProgramBinary = programBinary.Select(x => new Word { Value = x }).ToList();
+
+            Assert.AreEqual(2, cpu.GetPCOfNthFunction(0));
+            Assert.AreEqual(7, cpu.GetPCOfNthFunction(1));
+
+            cpu.Cycle();
+            Assert.AreEqual(7, cpu.GetPCValue());
+            Assert.IsNotNull(cpu.Stack.Words[0]);
+            Assert.AreEqual(0, cpu.Stack.Words[0].Value);
+            Assert.AreEqual(1, cpu.Stack.SP);
+
+            cpu.Cycle();
+            Assert.AreEqual(10, cpu.GetPCValue());
+            cpu.Cycle();
+            Assert.AreEqual(11, cpu.GetPCValue());
+            Assert.AreEqual(1, cpu.Registers[3].Data.Value);
+
             cpu.Cycle();
             Assert.AreEqual(1, cpu.GetPCValue());
-
-            var defnInsn = new FunctionInstruction(cpu, new Word { Value = 0b0011_0000_0010 });
-            defnInsn.Execute();
-			cpu.Cycle();
-			Assert.AreEqual(4, cpu.GetPCValue());
-        }
-
-        [TestMethod]
-        public void TestEndFuncInstruction()
-        {
-			var noop = new ArithmeticInstruction(cpu, new Word { Value = 0x00F });
-			noop.Execute();
-			cpu.Cycle();
-			Assert.AreEqual(1, cpu.GetPCValue());
-
-			var endInsn = new FunctionInstruction(cpu, new Word { Value = 0b0011_0000_0000 });
-            endInsn.Execute();
-			cpu.Cycle();
-			Assert.AreEqual(2, cpu.GetPCValue());
+            Assert.AreEqual(0, cpu.Stack.SP);
+            Assert.AreEqual(0, cpu.Stack.Words[0].Value);
         }
     }
 }

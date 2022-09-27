@@ -9,7 +9,7 @@ namespace WackyArch.CPUs
 	{
 		private string ProgramText { get; set; }
 
-		private List<Word> ProgramBinary { get; set; }
+		public List<Word> ProgramBinary { get; set; }
 
 
 		public InterpreterCPU() : base() { }

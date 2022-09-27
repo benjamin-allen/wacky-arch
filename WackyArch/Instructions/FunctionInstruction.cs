@@ -15,8 +15,8 @@ namespace WackyArch.Instructions
     public class FunctionInstruction : Instruction
     {
         protected int FunctionNameLength;
-        protected bool IsCallInstruction;
-        protected bool IsReturnInstruction;
+        public bool IsCallInstruction;
+        public bool IsReturnInstruction;
         protected int FunctionNumber;
 
         public FunctionInstruction(CPU cpu, Word word) : base(cpu, word)
@@ -46,6 +46,7 @@ namespace WackyArch.Instructions
                     // The function to call is the function number
                     Cpu.SetPCValue(cpu.GetPCOfNthFunction(FunctionNumber));
                     // After this point the CPU will basically execute the "definefunc" instruction and then go to execute the function's code.
+                    Cpu.IncrementPC = false;
                 }
                 else if (IsReturnInstruction)
                 {
