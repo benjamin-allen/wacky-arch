@@ -37,5 +37,10 @@ namespace WackyArch.Instructions
 				Cpu.Registers[X].Data.Value >>= ShiftAmt;
 			}
 		}
+
+		public override string Disassemble()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

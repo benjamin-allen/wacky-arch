@@ -56,5 +56,9 @@ namespace WackyArch.Instructions
             }
         }
 
+        public override string Disassemble()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

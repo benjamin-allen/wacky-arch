@@ -64,5 +64,10 @@ namespace WackyArch.Instructions
 				throw new NotImplementedException("Invalid Interrupt.");
             }
 		}
+
+		public override string Disassemble()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

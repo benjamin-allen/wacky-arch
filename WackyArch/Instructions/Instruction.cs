@@ -20,5 +20,7 @@ namespace WackyArch.Instructions
 		}
 
 		public abstract void Execute();
+
+		public abstract string Disassemble();
 	}
 }

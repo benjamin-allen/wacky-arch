@@ -56,6 +56,7 @@
 		public static readonly Token Or = new Token("OR", "OR");
 		public static readonly Token Xor = new Token("XOR", "XOR");
 		public static readonly Token Not = new Token("NOT", "NOT");
+		public static readonly Token NoOp = new Token("NOOP", "NOOP");
 
 		public static readonly Token ShiftLeft = new Token("SL", "SL,SHL,SHIFTLEFT");
 		public static readonly Token ShiftRight = new Token("SR", "SR,SHR,SHIFTRIGHT");

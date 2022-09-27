@@ -49,5 +49,10 @@ namespace WackyArch.Instructions
 					throw new InvalidOperationException("Invalid FuncCode!");
 			}
 		}
+
+		public override string Disassemble()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

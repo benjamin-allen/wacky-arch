@@ -54,5 +54,10 @@ namespace WackyArch.Instructions
 					throw new InvalidOperationException("Invalid Opcode!");
 			}
 		}
+
+		public override string Disassemble()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

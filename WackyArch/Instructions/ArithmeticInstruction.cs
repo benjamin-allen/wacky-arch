@@ -76,5 +76,35 @@ namespace WackyArch.Instructions
 					throw new InvalidOperationException("Invalid FuncCode!");
 			}
 		}
-	}
+
+        public override string Disassemble()
+        {
+			var opcodeMap = new Dictionary<int, Token> {
+				{ 0, Tokens.Add }, { 1, Tokens.Subtract}, { 2, Tokens.Multiply }, { 3, Tokens.Divide },
+				{ 4, Tokens.Modulus }, { 5, Tokens.Negate }, { 10, Tokens.And }, { 11, Tokens.Or }, { 12, Tokens.Xor },
+				{ 13, Tokens.Not }, { 15, Tokens.NoOp}
+			};
+			var registerMap = new Dictionary<int, Token> { { 0, Tokens.R0 }, { 1, Tokens.R1 }, { 2, Tokens.R2 }, { 3, Tokens.Const } };
+
+			switch (FuncCode)
+			{
+				case 0x0:
+				case 0x1:
+				case 0x2:
+				case 0x3:
+				case 0x4:
+				case 0xA:
+				case 0xB:
+				case 0xC:
+					return opcodeMap[FuncCode].Canonical + " " + registerMap[X].Canonical + " " + registerMap[Y].Canonical;
+				case 0x5:
+				case 0xD:
+					return opcodeMap[FuncCode].Canonical + " " + registerMap[Y].Canonical;
+				case 0xF:
+					return opcodeMap[FuncCode].Canonical;
+				default:
+					throw new ComponentException($"Cannot disassemble arithmetic instruction with funccode {FuncCode}.", $"Invalid FuncCode: {FuncCode}");
+            }
+        }
+    }
 }
