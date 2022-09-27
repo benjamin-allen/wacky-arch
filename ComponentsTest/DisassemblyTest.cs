@@ -57,5 +57,21 @@ namespace Test
             Assert.AreEqual("NOOP", Disassembler.DisassembleWord(cpu, new Word { Value = 0b0000_0000_1111 }, out skipNWords));
             Assert.AreEqual(0, skipNWords);
         }
+
+        [TestMethod]
+        public void ShiftDisassembly()
+        {
+            Assert.AreEqual("SL R2 7", Disassembler.DisassembleWord(cpu, new Word { Value = 0b0001_0010_0111 }, out int skipNWords));
+            Assert.AreEqual(0, skipNWords);
+
+            Assert.AreEqual("SL R1 7", Disassembler.DisassembleWord(cpu, new Word { Value = 0b0001_0101_0111 }, out skipNWords));
+            Assert.AreEqual(0, skipNWords);
+
+            Assert.AreEqual("SR R0 15", Disassembler.DisassembleWord(cpu, new Word { Value = 0b0001_1000_1111 }, out skipNWords));
+            Assert.AreEqual(0, skipNWords);
+
+            Assert.AreEqual("SRA CONST 5", Disassembler.DisassembleWord(cpu, new Word { Value = 0b0001_1111_0101 }, out skipNWords));
+            Assert.AreEqual(0, skipNWords);
+        }
     }
 }

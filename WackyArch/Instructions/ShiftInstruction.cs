@@ -1,5 +1,6 @@
 ﻿using WackyArch.Components;
 using WackyArch.CPUs;
+using WackyArch.Utilities;
 
 namespace WackyArch.Instructions
 {
@@ -40,7 +41,18 @@ namespace WackyArch.Instructions
 
 		public override string Disassemble()
 		{
-			throw new NotImplementedException();
+			switch (ShiftCode)
+            {
+				case 0:
+				case 1:
+					return Tokens.ShiftLeft.Canonical + " " + Cpu.Registers[X].Name + " " + ShiftAmt.ToString();
+				case 2:
+					return Tokens.ShiftRight.Canonical + " " + Cpu.Registers[X].Name + " " + ShiftAmt.ToString();
+				case 3:
+					return Tokens.ShiftRightArithmetic.Canonical + " " + Cpu.Registers[X].Name + " " + ShiftAmt.ToString();
+				default:
+					throw new ComponentException($"Cannot disassemble shift instruction with shiftcode {ShiftCode}.", $"Invalid ShiftCode: {ShiftCode}");
+			}
 		}
 	}
 }
