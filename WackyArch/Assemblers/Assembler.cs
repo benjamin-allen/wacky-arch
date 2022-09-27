@@ -34,6 +34,8 @@ namespace WackyArch.Assemblers
 			var deferredInstructions = new List<Tuple<string, int, int>>();
 			pcTextLineMap = new Dictionary<int, int>();
 			int currentAddress = 0;
+			CheckForTooManyFunctions(assemblyLines);
+			List<string> functionList = GetFunctions(assemblyLines);
 
 			for(int i = 0; i < assemblyLines.Count; i++)
 			{
@@ -97,12 +99,17 @@ namespace WackyArch.Assemblers
 				else if (Tokens.CheckTokenMatch(tokens[0], Tokens.FunctionTokens))
 				{
 					// functions are weird and hard.
-					var resultWords = AssembleFunction(tokens, i);
-					int? nextDefFunc = assemblyLines.Where((value, index) => index > i && value.Contains("DEF")).Select((value, index) => index).FirstOrDefault();
-					int? nextEndFunc = assemblyLines.Where((value, index) => index > i && value.Contains("END")).Select((value, index) => index).FirstOrDefault();
-					if (nextEndFunc == null || (nextDefFunc.HasValue && nextDefFunc < nextEndFunc))
+					var resultWords = AssembleFunction(tokens, i, functionList);
+					if (Tokens.GetCanonicalToken(tokens[0], Tokens.FunctionTokens) == Tokens.DefineFunction.Canonical)
 					{
-						throw new AssemblerException("No matching ENDFUNC for this DEFFUNC", i, string.Join(" ", tokens), "No ENDFUNC found.");
+						var nextDefFuncQuery = assemblyLines.Where((value, index) => index > i && value.StartsWith(Tokens.DefineFunction.Canonical)).Select((value, index) => index);
+						var nextEndFuncQuery = assemblyLines.Where((value, index) => index > i && value.StartsWith(Tokens.EndFunction.Canonical)).Select((value, index) => index);
+						int? nextDefFunc = nextDefFuncQuery.Count() > 0 ? nextDefFuncQuery.First() : null;
+						int? nextEndFunc = nextEndFuncQuery.Count() > 0 ? nextEndFuncQuery.First() : null;
+						if (nextEndFunc == null || (nextDefFunc.HasValue && nextDefFunc < nextEndFunc))
+						{
+							throw new AssemblerException("No matching ENDFUNC for this DEFFUNC", i, string.Join(" ", tokens), "No ENDFUNC found.");
+						}
 					}
 					pcTextLineMap.Add(currentAddress, i);
 					currentAddress += resultWords.Count;
@@ -135,6 +142,30 @@ namespace WackyArch.Assemblers
 			}
 
 			return words;
+		}
+
+		private static List<string> GetFunctions(List<string> assemblyLines)
+		{
+			var results = new List<string>();
+			foreach (var (line,index) in assemblyLines.Select((v, i) => (v, i)))
+			{
+				if (line.StartsWith(Tokens.DefineFunction.Canonical))
+				{
+					ValidateFunction(line.Split(" ").ToList(), index, new List<string>());
+					results.Add(line.Split(" ")[1]);
+				}
+			}
+			return results;
+		}
+
+		private static void CheckForTooManyFunctions(List<string> programLines)
+		{
+			var numFunctions = programLines.Where(p => p.StartsWith(Tokens.DefineFunction.Canonical)).Count();
+			if (numFunctions > 16)
+			{
+				var line = programLines.Where(p => p.StartsWith(Tokens.DefineFunction.Canonical)).Select((v, i) => (v, i)).ToList()[16];
+				throw new AssemblerException("Too many functions defined: Only 16 functions can be defined.", line.i, line.v, "Too many functions defined.");
+			}
 		}
 
 		private static Word AssembleLongAType(List<string> tokens, int i)
@@ -323,9 +354,9 @@ namespace WackyArch.Assemblers
 			return new Word { Value = wordValue };
         }
 
-		private static List<Word> AssembleFunction(List<string> tokens, int i)
+		private static List<Word> AssembleFunction(List<string> tokens, int i, List<string> functionList)
 		{
-            ValidateFunction(tokens, i);
+            ValidateFunction(tokens, i, functionList);
 
 			switch (Tokens.GetCanonicalToken(tokens[0], Tokens.FunctionTokens))
 			{
@@ -338,6 +369,10 @@ namespace WackyArch.Assemblers
 					return wordList;
 				case "ENDFUNC":
 					return new List<Word> { new Word { Value = 0b0011_0000_0000 } };
+				case "CALL":
+					return new List<Word> { new Word { Value = 0b0011_1100_0000 + functionList.IndexOf(tokens[1]) } };
+				case "RETURN":
+					return new List<Word> { new Word { Value = 0b0011_1111_0000 } };
 				default:
 					throw new NotImplementedException();
 			}
@@ -439,20 +474,32 @@ namespace WackyArch.Assemblers
             }
         }
 
-		private static void ValidateFunction(List<string> tokens, int i)
+		private static void ValidateFunction(List<string> tokens, int i, List<string> functionList)
 		{
 			string line = string.Join(" ", tokens);
 			if (Tokens.GetCanonicalToken(tokens[0], Tokens.FunctionTokens) == "DEFFUNC")
 			{
 				tokens.ValidateTokenArraySize(i, 2, "DEFFUNC NAME");
-				if (tokens[1].Length > 255)
+				if (tokens[1].Length > 127)
 				{
 					throw new AssemblerException($"{tokens[1]} is too long of a name.", i, line, $"Name too long: {tokens[1]}");
 				}
 			}
-			else
+			else if (Tokens.GetCanonicalToken(tokens[0], Tokens.FunctionTokens) == "ENDFUNC")
 			{
 				tokens.ValidateTokenArraySize(i, 1, "ENDFUNC");
+			}
+			else if (Tokens.GetCanonicalToken(tokens[0], Tokens.FunctionTokens) == "CALL")
+			{
+				tokens.ValidateTokenArraySize(i, 2, "CALL");
+				if (functionList.Contains(tokens[1]) == false)
+				{
+					throw new AssemblerException($"{tokens[1]} is not the name of a function.", i, line, $"Not a function: {tokens[1]}");
+				}
+			}
+			else if (Tokens.GetCanonicalToken(tokens[0], Tokens.FunctionTokens) == "RETURN")
+			{
+				tokens.ValidateTokenArraySize(i, 1, "RETURN");
 			}
 		}
 

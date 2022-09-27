@@ -79,5 +79,10 @@ namespace WackyArch.CPUs
 			IsHalted = false;
 			IsErrored = false;
 		}
+
+		public virtual void GetPCOfNthFunction(int n)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

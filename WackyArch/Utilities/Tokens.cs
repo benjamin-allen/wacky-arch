@@ -35,7 +35,7 @@
 			};
 			FunctionTokens = new List<Token>
 			{
-				DefineFunction, EndFunction
+				DefineFunction, EndFunction, Call, Return
 			};
 
 			MnemonicTokens = LongATypeMnemonicTokens.Concat(ShortATypeMnemonicTokens)
@@ -61,8 +61,10 @@
 		public static readonly Token ShiftRight = new Token("SR", "SR,SHR,SHIFTRIGHT");
 		public static readonly Token ShiftRightArithmetic = new Token("SRA", "SRA,SHRA,SHIFTRIGHTA");
 
-		public static readonly Token DefineFunction = new Token("DEFFUNC", "DEFFUNC,DEFINEFUNC,DEFINEFUNCTION,DEFFUNCTION");
-		public static readonly Token EndFunction = new Token("ENDFUNC", "ENDFUNC, ENDFUNCTION");
+		public static readonly Token DefineFunction = new Token("DEFFUNC", "DEFFUNC");
+		public static readonly Token EndFunction = new Token("ENDFUNC", "ENDFUNC");
+		public static readonly Token Call = new Token("CALL", "CALL");
+		public static readonly Token Return = new Token("RETURN", "RETURN");
 
 		public static readonly Token Move = new Token("MOV", "MOV,MOVE");
 		public static readonly Token Swap = new Token("SWP", "SWP,SWAP");

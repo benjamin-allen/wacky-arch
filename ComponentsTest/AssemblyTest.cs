@@ -309,5 +309,77 @@ namespace Test
 			Assert.AreEqual(4, pcLineMap[16]);
 			Assert.AreEqual(5, pcLineMap[17]);
 		}
+
+		[TestMethod]
+		public void MissingEndFuncFails()
+		{
+			var program = String.Join(Environment.NewLine,
+				"deffunc a",
+				"endfunc",
+				"deffunc b");
+			try
+			{
+				Assembler.Assemble(new CPU(), program, out var _);
+			}
+			catch (AssemblerException ae)
+			{
+				if (ae.Message.ToLower().StartsWith("no matching") == false)
+				{
+					Assert.Fail(ae.Message);
+				}
+			}
+		}
+
+		[TestMethod]
+		public void TooManyDefFuncs()
+		{
+			var program = String.Join(Environment.NewLine,
+				"deffunc 0",
+				"endfunc",
+				"deffunc 1",
+				"endfunc",
+				"deffunc 2",
+				"endfunc",
+				"deffunc 3",
+				"endfunc",
+				"deffunc 4",
+				"endfunc",
+				"deffunc 5",
+				"endfunc",
+				"deffunc 6",
+				"endfunc",
+				"deffunc 7",
+				"endfunc",
+				"deffunc 8",
+				"endfunc",
+				"deffunc 9",
+				"endfunc",
+				"deffunc 10",
+				"endfunc",
+				"deffunc 11",
+				"endfunc",
+				"deffunc 12",
+				"endfunc",
+				"deffunc 13",
+				"endfunc",
+				"deffunc 14",
+				"endfunc",
+				"deffunc 15",
+				"endfunc",
+				"deffunc 16",
+				"endfunc"
+				);
+			try
+			{
+				Assembler.Assemble(new CPU(), program, out var _);
+			}
+			catch (AssemblerException ae)
+			{
+				if (ae.Message.ToLower().StartsWith("too many") == false)
+				{
+					Assert.Fail(ae.Message);
+				}
+			}
+		}
 	}
 }
