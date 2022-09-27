@@ -24,6 +24,9 @@ namespace Test.Instructions
         [TestMethod]
         public void TestDefFuncInstruction()
         {
+            // THIS TEST FAILS RIGHT NOW B/C A NORMAL CPU DOESN'T DO ANYTHING WITH FUNCTION INSNs
+
+
             var noop = new ArithmeticInstruction(cpu, new Word { Value = 0x00F });
             noop.Execute();
             cpu.Cycle();

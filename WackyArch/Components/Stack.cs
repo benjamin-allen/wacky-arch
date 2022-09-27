@@ -9,16 +9,16 @@ namespace WackyArch.Components
 {
 	public class Stack : ICyclable
 	{
-		public static int MaxWords = 15;
+		public static int MaxWords = 14;
 		public Word[] Words;
 		public int SP { get; set; }
-		public Pipe StackInterface { get; set; }
+		public StackPipe StackInterface { get; set; }
 
 		public Stack()
 		{
 			SP = 0;
 			Words = new Word[MaxWords];
-			StackInterface = new Pipe();
+			StackInterface = new StackPipe() { Name = "Stack" };
 		}
 
 		/// <summary>
@@ -29,15 +29,33 @@ namespace WackyArch.Components
 		{
 			if (StackInterface.Status == PipeStatus.AwaitingRead) // The stack was just written to
 			{
-				SP++;
-				if (SP > MaxWords) { throw new ComponentException("Stack overflow", "Stack overflow"); }
-				
+				var newVal = StackInterface.Read(out _);
+				StackInterface.Status = PipeStatus.Idle;
+				if (SP == 15) {
+					SP = newVal.Value & 0x00F; // Sets a new stack pointer (!!!)
+				}
+				else
+                {
+					Words[SP] = new Word { Value = newVal.Value };
+					SP++;
+                }
 			}
+			else if (StackInterface.Status == PipeStatus.ForceRead) // The stack was just read from. Adjust SP
+            {
+				SP--;
+				if (SP < 0) { throw new ComponentException("Stack underflow", "Stack underflow"); }
+				if (SP > 0)
+				{
+					StackInterface.Write(Words[SP - 1].Value);
+				}
+				StackInterface.Status = PipeStatus.Idle;
+            }
 		}
 
 		public void Reset()
 		{
-			throw new NotImplementedException();
+			SP = -1;
+			Words = new Word[MaxWords];
 		}
 	}
 }

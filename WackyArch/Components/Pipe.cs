@@ -30,9 +30,9 @@
         /// Returns true if the read was completed, allowing the reader to unblock
         /// </summary>
         /// <returns></returns>
-        public Word Read(out bool didRead)
+        public virtual Word Read(out bool didRead)
         {
-            if (Status == PipeStatus.AwaitingRead)
+            if (Status == PipeStatus.AwaitingRead || Status == PipeStatus.ForceRead)
             {
                 Word word = new Word { Value = Data.Value };
                 didRead = true;
@@ -57,10 +57,25 @@
         }
     }
 
+    public class StackPipe : AlwaysWriteablePipe
+    {
+        ///<summary>
+        ///Always allows a read. Returns the last thing put into the pipe
+        ///</summary>
+        public override Word Read(out bool didRead)
+        {
+            Status = PipeStatus.ForceRead;
+            var ret = base.Read(out didRead);
+            Status = PipeStatus.ForceRead;
+            return ret;
+        }
+    }
+
     public enum PipeStatus
     {
         Idle, // Reads or writes can be requested
         AwaitingRead, // Set when a value is written. Something must read from the pipe
-        AwaitingWrite // Set when a read request has been sent to an empty pipe. Something must write to the pipe
+        AwaitingWrite, // Set when a read request has been sent to an empty pipe. Something must write to the pipe
+        ForceRead
     }
 }
