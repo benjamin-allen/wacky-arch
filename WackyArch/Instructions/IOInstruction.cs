@@ -67,7 +67,23 @@ namespace WackyArch.Instructions
 
 		public override string Disassemble()
 		{
-			throw new NotImplementedException();
+			switch(FuncCode)
+			{
+				case 0:
+				case 1:
+					return Tokens.Read.Canonical + " " + Cpu.Registers[X].Name + " " + Cpu.Ports[PortNumber].Name;
+				case 2:
+					return Tokens.Write.Canonical + " " + Cpu.Registers[X].Name + " " + Cpu.Ports[PortNumber].Name;
+				case 3:
+					if (PortNumber == 0 || PortNumber == 0xF)
+                    {
+						return Tokens.Interrupt.Canonical + " " + Enum.GetName((InterruptType)PortNumber);
+                    }
+					goto default;
+				default:
+					throw new ComponentException($"Cannot disassemble IO instruction with funccode {FuncCode} and portnumber {PortNumber}.", $"Invalid FuncCode/PortNumber: {FuncCode}/{PortNumber}");
+
+			}
 		}
 	}
 }

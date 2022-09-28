@@ -1,5 +1,6 @@
 ﻿using WackyArch.Components;
 using WackyArch.CPUs;
+using WackyArch.Utilities;
 
 namespace WackyArch.Instructions
 {
@@ -47,7 +48,12 @@ namespace WackyArch.Instructions
 
         public override string Disassemble()
         {
-            throw new NotImplementedException();
-        }
+			var opcodeMap = new Dictionary<int, Token> {
+				{ 10, Tokens.AddConstant }, { 11, Tokens.SubConstant }, { 12, Tokens.ModConstant },
+				{ 13, Tokens.AndConstant }, { 14, Tokens.OrConstant }, { 15, Tokens.MoveConstant }
+			};
+
+			return opcodeMap[Opcode].Canonical + " " + (Opcode > 0b1100 ? Utilities.Utilities.SignExtend(Value, 7) : Value);
+		}
     }
 }

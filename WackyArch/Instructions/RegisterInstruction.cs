@@ -1,5 +1,6 @@
 ﻿using WackyArch.Components;
 using WackyArch.CPUs;
+using WackyArch.Utilities;
 
 namespace WackyArch.Instructions
 {
@@ -52,7 +53,17 @@ namespace WackyArch.Instructions
 
 		public override string Disassemble()
 		{
-			throw new NotImplementedException();
+			switch (FuncCode)
+			{
+				case 0x0:
+					return Tokens.Move.Canonical + " " + Cpu.Registers[X].Name + " " + Cpu.Registers[Y].Name;
+				case 0x1:
+					return Tokens.Swap.Canonical + " " + Cpu.Registers[X].Name + " " + Cpu.Registers[Y].Name;
+				case 0x2:
+					return Tokens.Compare.Canonical + " " + Cpu.Registers[X].Name + " " + Cpu.Registers[Y].Name;
+				default:
+					throw new ComponentException($"Cannot disassemble register instruction with funccode {FuncCode}.", $"Invalid FuncCode: {FuncCode}");
+			}
 		}
 	}
 }
