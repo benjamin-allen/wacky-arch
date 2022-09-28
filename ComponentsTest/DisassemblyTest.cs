@@ -127,5 +127,50 @@ namespace Test
             Assert.AreEqual("MOVC 127", Disassembler.DisassembleWord(cpu, new Word { Value = 0xF7F }, out skipNWords));
             Assert.AreEqual(0, skipNWords);
         }
+
+        [TestMethod]
+        public void FunctionWordDisassembly()
+        {
+            Assert.AreEqual("DEFFUNC", Disassembler.DisassembleWord(cpu, new Word { Value = 0x30F }, out int skipNWords));
+            Assert.AreEqual(15, skipNWords);
+
+            Assert.AreEqual("ENDFUNC", Disassembler.DisassembleWord(cpu, new Word { Value = 0x300 }, out skipNWords));
+            Assert.AreEqual(0, skipNWords);
+
+            Assert.AreEqual("CALL 12", Disassembler.DisassembleWord(cpu, new Word { Value = 0x3CC }, out skipNWords));
+            Assert.AreEqual(0, skipNWords);
+
+            Assert.AreEqual("RETURN", Disassembler.DisassembleWord(cpu, new Word { Value = 0x3F0 }, out skipNWords));
+            Assert.AreEqual(0, skipNWords);
+        }
+
+        [TestMethod]
+        public void FunctionDisassembly()
+        {
+            var programBinary = new List<int> { 0x302, 'F', '0', 0x00F, 0x00F, 0x300 };
+            var expectedDisassembly = string.Join(Environment.NewLine, "DEFFUNC F0", "NOOP", "NOOP", "ENDFUNC");
+
+            Assert.AreEqual(expectedDisassembly, Disassembler.Disassemble(cpu, programBinary.Select(x => new Word { Value = x }).ToList(), out var pcLineMap));
+            Assert.AreEqual(0, pcLineMap[0]);
+            Assert.AreEqual(0, pcLineMap[1]);
+            Assert.AreEqual(0, pcLineMap[2]);
+            Assert.AreEqual(1, pcLineMap[3]);
+            Assert.AreEqual(2, pcLineMap[4]);
+            Assert.AreEqual(3, pcLineMap[5]);
+
+
+            programBinary = new List<int> { 0x3C0, 0x302, 'F', '0', 0x00F, 0x00F, 0x3F0, 0x300 };
+            expectedDisassembly = string.Join(Environment.NewLine, "CALL F0", "DEFFUNC F0", "NOOP", "NOOP", "RETURN", "ENDFUNC");
+
+            Assert.AreEqual(expectedDisassembly, Disassembler.Disassemble(cpu, programBinary.Select(x => new Word { Value = x }).ToList(), out pcLineMap));
+            Assert.AreEqual(0, pcLineMap[0]);
+            Assert.AreEqual(1, pcLineMap[1]);
+            Assert.AreEqual(1, pcLineMap[2]);
+            Assert.AreEqual(1, pcLineMap[3]);
+            Assert.AreEqual(2, pcLineMap[4]);
+            Assert.AreEqual(3, pcLineMap[5]);
+            Assert.AreEqual(4, pcLineMap[6]);
+            Assert.AreEqual(5, pcLineMap[7]);
+        }
     }
 }

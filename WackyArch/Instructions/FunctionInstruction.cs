@@ -14,10 +14,10 @@ namespace WackyArch.Instructions
     /// </summary>
     public class FunctionInstruction : Instruction
     {
-        protected int FunctionNameLength;
+        public int FunctionNameLength;
         public bool IsCallInstruction;
         public bool IsReturnInstruction;
-        protected int FunctionNumber;
+        public int FunctionNumber;
 
         public FunctionInstruction(CPU cpu, Word word) : base(cpu, word)
         {
@@ -58,7 +58,18 @@ namespace WackyArch.Instructions
 
         public override string Disassemble()
         {
-            throw new NotImplementedException();
+            if (!IsCallInstruction && !IsReturnInstruction)
+            {
+                return FunctionNameLength > 0 ? Tokens.DefineFunction.Canonical : Tokens.EndFunction.Canonical;
+            }
+            else if (IsCallInstruction)
+            {
+                return Tokens.Call.Canonical + " " + FunctionNumber;
+            }
+            else
+            {
+                return Tokens.Return.Canonical;
+            }
         }
     }
 }
