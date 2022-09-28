@@ -172,5 +172,56 @@ namespace Test
             Assert.AreEqual(4, pcLineMap[6]);
             Assert.AreEqual(5, pcLineMap[7]);
         }
+
+        [TestMethod]
+        public void JumpDisassembly()
+        {
+            var programBinary = new List<int> { 0x00F, 0x501, 0x00F };
+            var expectedDisassembly = string.Join(Environment.NewLine, "NOOP", "JMP @L1", "@L1", "NOOP");
+            Assert.AreEqual(expectedDisassembly, Disassembler.Disassemble(cpu, programBinary.Select(x => new Word { Value = x }).ToList(), out var pcLineMap));
+            Assert.AreEqual(0, pcLineMap[0]);
+            Assert.AreEqual(1, pcLineMap[1]);
+            Assert.AreEqual(3, pcLineMap[2]);
+
+
+            programBinary = new List<int> { 0x00F, 0x601, 0x00F };
+            expectedDisassembly = string.Join(Environment.NewLine, "NOOP", "JEZ @L1", "@L1", "NOOP");
+            Assert.AreEqual(expectedDisassembly, Disassembler.Disassemble(cpu, programBinary.Select(x => new Word { Value = x }).ToList(), out pcLineMap));
+            Assert.AreEqual(0, pcLineMap[0]);
+            Assert.AreEqual(1, pcLineMap[1]);
+            Assert.AreEqual(3, pcLineMap[2]);
+
+
+            programBinary = new List<int> { 0x00F, 0x701, 0x00F };
+            expectedDisassembly = string.Join(Environment.NewLine, "NOOP", "JGZ @L1", "@L1", "NOOP");
+            Assert.AreEqual(expectedDisassembly, Disassembler.Disassemble(cpu, programBinary.Select(x => new Word { Value = x }).ToList(), out pcLineMap));
+            Assert.AreEqual(0, pcLineMap[0]);
+            Assert.AreEqual(1, pcLineMap[1]);
+            Assert.AreEqual(3, pcLineMap[2]);
+
+            programBinary = new List<int> { 0x00F, 0x801, 0x00F };
+            expectedDisassembly = string.Join(Environment.NewLine, "NOOP", "JLZ @L1", "@L1", "NOOP");
+            Assert.AreEqual(expectedDisassembly, Disassembler.Disassemble(cpu, programBinary.Select(x => new Word { Value = x }).ToList(), out pcLineMap));
+            Assert.AreEqual(0, pcLineMap[0]);
+            Assert.AreEqual(1, pcLineMap[1]);
+            Assert.AreEqual(3, pcLineMap[2]);
+
+            programBinary = new List<int> { 0x00F, 0x901, 0x00F };
+            expectedDisassembly = string.Join(Environment.NewLine, "NOOP", "JA R1", "NOOP");
+            Assert.AreEqual(expectedDisassembly, Disassembler.Disassemble(cpu, programBinary.Select(x => new Word { Value = x }).ToList(), out pcLineMap));
+            Assert.AreEqual(0, pcLineMap[0]);
+            Assert.AreEqual(1, pcLineMap[1]);
+            Assert.AreEqual(2, pcLineMap[2]);
+
+
+            programBinary = new List<int> { 0xA01, 0x5FF, 0x601, 0x00F, 0x701 };
+            expectedDisassembly = string.Join(Environment.NewLine, "@L1", "ADDC 1", "JMP @L1", "JEZ @L2", "@L2", "NOOP", "JGZ @L3", "@L3");
+            Assert.AreEqual(expectedDisassembly, Disassembler.Disassemble(cpu, programBinary.Select(x => new Word { Value = x }).ToList(), out pcLineMap));
+            Assert.AreEqual(1, pcLineMap[0]);
+            Assert.AreEqual(2, pcLineMap[1]);
+            Assert.AreEqual(3, pcLineMap[2]);
+            Assert.AreEqual(5, pcLineMap[3]);
+            Assert.AreEqual(6, pcLineMap[4]);
+        }
     }
 }

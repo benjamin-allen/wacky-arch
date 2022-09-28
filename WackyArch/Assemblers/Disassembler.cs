@@ -63,7 +63,48 @@ namespace WackyArch.Assemblers
 
             // In pass 4, inject the JUMP labels. Ugh.
             // Update the PCLinemap by pushing each line past the new jump instruction one down.
-            return String.Join(Environment.NewLine, pass3);
+            var pass4 = new List<string>(pass3);
+            Dictionary<int, string> linesToInsertLabelsAbove = new();
+            for (int i = 0; i < pass4.Count; i++)
+            {
+                var line = pass4[i];
+                if (line.StartsWith(Tokens.Jump.Canonical) || line.StartsWith(Tokens.JumpIfZero.Canonical) || line.StartsWith(Tokens.JumpIfLesser.Canonical) || line.StartsWith(Tokens.JumpIfGreater.Canonical))
+                {
+                    // This is a jump instruction. Read the offset of the jump
+                    var offset = Convert.ToInt32(line.Split(" ")[1]);
+                    var pc = pcLineMap.First(x => x.Value == i).Key; // what is the PC of this line?
+                    var newPc = pc + offset;
+                    var didFind = pcLineMap.TryGetValue(newPc, out int newPcLine);
+
+                    var name = "@L" + (linesToInsertLabelsAbove.Count + 1);
+                    try
+                    {
+                        linesToInsertLabelsAbove.Add(didFind ? newPcLine : -1, name); // If we didn't find the line the program is jumping past its end. -1 marks that
+                    }
+                    catch (ArgumentException)
+                    {
+                        // There was already a label for this line. Reuse that
+                        name = linesToInsertLabelsAbove[newPcLine];
+                    }
+                    pass4[i] = line.Split(" ")[0] + " " + name;
+                }
+            }
+            foreach(var (lineNumber, label) in linesToInsertLabelsAbove.OrderByDescending(x => x.Key)) // Do this in reverse order so we're always inserting a valid label.
+            {
+                if (lineNumber == -1 )
+                {
+                    pass4.Add(label);
+                    continue;
+                }
+                pass4.Insert(lineNumber, label);
+                foreach (var (k,v) in pcLineMap) // Update PCLineMap.
+                {
+                    pcLineMap[k] = v >= lineNumber ? v + 1 : v;
+                }
+                
+            }
+
+            return String.Join(Environment.NewLine, pass4);
 
         }
 
