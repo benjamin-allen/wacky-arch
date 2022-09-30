@@ -102,7 +102,10 @@ namespace Test
             Assert.AreEqual("INT UNLOCK", Disassembler.DisassembleWord(cpu, new Word { Value = 0b0100_1100_0000 }, out skipNWords));
             Assert.AreEqual(0, skipNWords);
 
-            Assert.AreEqual("INT HALT", Disassembler.DisassembleWord(cpu, new Word { Value = 0b0100_1110_1111 }, out skipNWords));
+            Assert.AreEqual("INT HALT", Disassembler.DisassembleWord(cpu, new Word { Value = 0b0100_1100_0001 }, out skipNWords));
+            Assert.AreEqual(0, skipNWords);
+
+            Assert.AreEqual("INT END", Disassembler.DisassembleWord(cpu, new Word { Value = 0b0100_1110_1111 }, out skipNWords));
             Assert.AreEqual(0, skipNWords);
         }
 

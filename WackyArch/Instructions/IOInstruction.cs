@@ -55,10 +55,14 @@ namespace WackyArch.Instructions
             {
 				throw new Interrupt(InterruptType.UNLOCK);
             }
-			else if (FuncCode == 3 && X == 3 && PortNumber == 0xF) // special "INTERRUPT/HALT" instruction
+			else if (FuncCode == 3 && X == 3 && PortNumber == 0x1) // special "INTERRUPT/HALT" instruction
             {
 				throw new Interrupt(InterruptType.HALT);
             }
+			else if (FuncCode == 3 && X == 3 && PortNumber == 0xF) // special "INTERRUPT/HALT" instruction
+			{
+				throw new Interrupt(InterruptType.END);
+			}
 			else
             {
 				throw new NotImplementedException("Invalid Interrupt.");
@@ -75,7 +79,7 @@ namespace WackyArch.Instructions
 				case 2:
 					return Tokens.Write.Canonical + " " + Cpu.Registers[X].Name + " " + Cpu.Ports[PortNumber].Name;
 				case 3:
-					if (PortNumber == 0 || PortNumber == 0xF)
+					if (PortNumber == 0 || PortNumber == 0xF || PortNumber == 0x1)
                     {
 						return Tokens.Interrupt.Canonical + " " + Enum.GetName((InterruptType)PortNumber);
                     }

@@ -31,7 +31,7 @@
 			};
 			InterruptTokens = new List<Token>
 			{ 
-				Interrupt, Unlock, Halt
+				Interrupt, Unlock, Halt, End
 			};
 			FunctionTokens = new List<Token>
 			{
@@ -77,6 +77,7 @@
 		public static readonly Token Interrupt = new Token("INT", "INT,INTERRUPT");
 		public static readonly Token Unlock = new Token("UNLOCK", "UNLOCK");
 		public static readonly Token Halt = new Token("HALT", "HALT");
+		public static readonly Token End = new Token("END", "END");
 
 		public static readonly Token Jump = new Token("JMP", "JMP,JUMP");
 		public static readonly Token JumpIfZero = new Token("JEZ", "JEZ,JUMPIFZERO");

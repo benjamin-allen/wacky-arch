@@ -117,7 +117,7 @@ namespace Test.Instructions
         [TestMethod]
 		public void TestHaltInterrupt()
         {
-			var haltInsn = new IOInstruction(cpu, new Word { Value = 0b0100_1111_1111 });
+			var haltInsn = new IOInstruction(cpu, new Word { Value = 0b0100_1111_0001 });
 			try
             {
 				haltInsn.Execute();
@@ -128,11 +128,25 @@ namespace Test.Instructions
             }
         }
 
-        [TestMethod]
+		[TestMethod]
+		public void TestEndInterrupt()
+		{
+			var haltInsn = new IOInstruction(cpu, new Word { Value = 0b0100_1111_1111 });
+			try
+			{
+				haltInsn.Execute();
+			}
+			catch (Interrupt i)
+			{
+				Assert.AreEqual(i.InterruptType, InterruptType.END);
+			}
+		}
+
+		[TestMethod]
 		public void TestInvalidInterrupts()
         {
 			var baseVal = 0b0100_1111_0000;
-			for (int i = 1; i < 0xF; i++)
+			for (int i = 2; i < 0xF; i++)
             {
 				var invalidInterruptInsn = new IOInstruction(cpu, new Word { Value = baseVal + i });
 				try

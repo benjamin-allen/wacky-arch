@@ -196,11 +196,11 @@ namespace WackyArch.Assemblers
 				case "XOR":
 					wordValue |= 0x00C; break;
 				case "MOV":
-					wordValue |= 0x300; break;
+					wordValue |= 0x200; break;
 				case "SWP":
-					wordValue |= 0x301; break;
+					wordValue |= 0x201; break;
 				case "CMP":
-					wordValue |= 0x302; break;
+					wordValue |= 0x202; break;
 				default:
 					throw new NotImplementedException();
 			}
@@ -304,10 +304,6 @@ namespace WackyArch.Assemblers
 					wordValue |= 0b0001_1000_0000; break;
 				case "SRA":
 					wordValue |= 0b0001_1100_0000; break;
-				case "RL":
-					wordValue |= 0b0010_0000_0000; break;
-				case "RR":
-					wordValue |= 0b0010_1000_0000; break;
 				default:
 					throw new NotImplementedException();
 			}
@@ -346,6 +342,8 @@ namespace WackyArch.Assemblers
 				case "UNLOCK":
 					wordValue = 0b0100_1111_0000; break;
 				case "HALT":
+					wordValue = 0b0100_1111_0001; break;
+				case "END":
 					wordValue = 0b0100_1111_1111; break;
 				default:
 					throw new NotImplementedException();

@@ -42,11 +42,11 @@ namespace Test
 			List<Word> binary = Assembler.Assemble(cpu, program, out _);
 
 			Assert.AreEqual(0b1111_0000_0001, binary[0].Value & 0xFFF);
-			Assert.AreEqual(0b0011_0011_0000, binary[1].Value & 0xFFF);
-			Assert.AreEqual(0b0011_0111_0000, binary[2].Value & 0xFFF);
+			Assert.AreEqual(0b0010_0011_0000, binary[1].Value & 0xFFF);
+			Assert.AreEqual(0b0010_0111_0000, binary[2].Value & 0xFFF);
 			Assert.AreEqual(0b1111_0000_1010, binary[3].Value & 0xFFF);
 			Assert.AreEqual(0b0000_0001_0000, binary[4].Value & 0xFFF);
-			Assert.AreEqual(0b0011_0001_0001, binary[5].Value & 0xFFF);
+			Assert.AreEqual(0b0010_0001_0001, binary[5].Value & 0xFFF);
 			Assert.AreEqual(0b1011_0000_0001, binary[6].Value & 0xFFF);
 			Assert.AreEqual(0b0111_1111_1101, binary[7].Value & 0xFFF);
 		}
@@ -73,17 +73,17 @@ namespace Test
 			List<Word> binary = Assembler.Assemble(cpu, program, out _);
 
 			Assert.AreEqual(0xF0A, binary[0].Value & 0xFFF);
-			Assert.AreEqual(0x330, binary[1].Value & 0xFFF);
+			Assert.AreEqual(0x230, binary[1].Value & 0xFFF);
 			Assert.AreEqual(0xF0F, binary[2].Value & 0xFFF);
-			Assert.AreEqual(0x370, binary[3].Value & 0xFFF);
-			Assert.AreEqual(0x390, binary[4].Value & 0xFFF);
+			Assert.AreEqual(0x270, binary[3].Value & 0xFFF);
+			Assert.AreEqual(0x290, binary[4].Value & 0xFFF);
 			Assert.AreEqual(0x080, binary[5].Value & 0xFFF);
-			Assert.AreEqual(0x390, binary[6].Value & 0xFFF);
+			Assert.AreEqual(0x290, binary[6].Value & 0xFFF);
 			Assert.AreEqual(0x081, binary[7].Value & 0xFFF);
-			Assert.AreEqual(0x380, binary[8].Value & 0xFFF);
+			Assert.AreEqual(0x280, binary[8].Value & 0xFFF);
 			Assert.AreEqual(0x092, binary[9].Value & 0xFFF);
 			Assert.AreEqual(0x093, binary[10].Value & 0xFFF);
-			Assert.AreEqual(0x382, binary[11].Value & 0xFFF);
+			Assert.AreEqual(0x282, binary[11].Value & 0xFFF);
 			Assert.AreEqual(0x025, binary[12].Value & 0xFFF);
 			Assert.AreEqual(0x025, binary[13].Value & 0xFFF);
 
@@ -140,14 +140,14 @@ namespace Test
 			List<Word> binary = Assembler.Assemble(cpu2, program, out _);
 
 			Assert.AreEqual(0x400, binary[0].Value & 0xFFF);
-			Assert.AreEqual(0x322, binary[1].Value & 0xFFF);
+			Assert.AreEqual(0x222, binary[1].Value & 0xFFF);
 			Assert.AreEqual(0x809, binary[2].Value & 0xFFF);
 			Assert.AreEqual(0x411, binary[3].Value & 0xFFF);
-			Assert.AreEqual(0x362, binary[4].Value & 0xFFF);
+			Assert.AreEqual(0x262, binary[4].Value & 0xFFF);
 			Assert.AreEqual(0x806, binary[5].Value & 0xFFF);
 			Assert.AreEqual(0x422, binary[6].Value & 0xFFF);
 			Assert.AreEqual(0x0FC, binary[7].Value & 0xFFF);
-			Assert.AreEqual(0x3B2, binary[8].Value & 0xFFF);
+			Assert.AreEqual(0x2B2, binary[8].Value & 0xFFF);
 			Assert.AreEqual(0x802, binary[9].Value & 0xFFF);
 			Assert.AreEqual(0x504, binary[10].Value & 0xFFF);
 			Assert.AreEqual(0x060, binary[11].Value & 0xFFF);

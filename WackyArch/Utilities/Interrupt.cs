@@ -9,7 +9,8 @@ namespace WackyArch.Utilities
     public enum InterruptType
     {
         UNLOCK,
-        HALT = 15,
+        HALT,
+        END = 15
     }
 
     public class Interrupt : Exception

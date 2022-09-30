@@ -14,6 +14,13 @@ namespace WackyArch.Assemblers
     {
         public static string Disassemble(CPU cpu, List<Word> programBinary, out Dictionary<int, int> pcLineMap)
         {
+            // Where's the INT END instruction?
+            var intEndLoc = programBinary.FindIndex(x => x.Value == 0x3FF);
+            if (intEndLoc != -1)
+            {
+                programBinary = programBinary.Take(intEndLoc).ToList();
+            }
+
             // Pass 1. Get opcodes in place, but don't resolve call names, function names, or jump labels yet
             pcLineMap = new Dictionary<int, int>();
             var pass1 = new List<string>();

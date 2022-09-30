@@ -10,7 +10,7 @@
     {
         public string Name { get; set; }
         public PipeStatus Status { get; set; } = PipeStatus.Idle;
-        private Word Data { get; set; } = new Word();
+        public Word Data { get; set; } = new Word();
 
         /// <summary>
         /// Returns true if the write was completed, allowing the writer to unblock
