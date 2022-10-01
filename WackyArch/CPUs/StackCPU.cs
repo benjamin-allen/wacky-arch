@@ -21,14 +21,21 @@ namespace WackyArch.CPUs
         {
 			Stack = new Stack();
 			Memory = new Memory(256);
-			Ports = new Port[] { new Port(Stack.StackInterface, "STACK") };
+			var addrPort = new Port(Memory.Address, "ADDR");
+			var dataPort = new Port(Memory.Data, "DATA");
+			Ports = new Port[] { new Port(Stack.StackInterface, "STACK"), addrPort, dataPort };
         }
 
 		public StackCPU(Port[] ports) : base()
         {
 			Stack = new Stack();
 			Memory = new Memory(256);
-			Ports = ports.Append(new Port(Stack.StackInterface, "STACK")).ToArray();
+			var addrPort = new Port(Memory.Address, "ADDR");
+			var dataPort = new Port(Memory.Data, "DATA");
+
+			var p = new Port[] { new Port(Stack.StackInterface, "STACK"), addrPort, dataPort }.ToList();
+			p.AddRange(ports);
+			Ports = p.ToArray();
         }
 
 		public void AddToCallStack(int currentPC)
