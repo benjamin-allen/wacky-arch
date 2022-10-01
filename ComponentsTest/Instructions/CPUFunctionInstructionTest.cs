@@ -25,7 +25,7 @@ namespace Test.Instructions
         public void TestDefFuncEndFuncInstruction()
         {
             var programBinary = new List<int> { 0x302, 'F', '0', 0x00F, 0x00F, 0x300 };
-            cpu.ProgramBinary = programBinary.Select(x => new Word { Value = x }).ToList();
+            cpu.Load(programBinary.Select(x => new Word { Value = x}).ToList());
 
             Assert.AreEqual(0, cpu.GetPCValue());
             Assert.AreEqual(0, cpu.GetPCOfNthFunction(0));
@@ -42,13 +42,16 @@ namespace Test.Instructions
 
             cpu.Cycle();
             Assert.AreEqual(true, cpu.IsHalted);
+            cpu.Cycle();
+            cpu.Cycle();
+            Assert.AreEqual(true, cpu.IsHalted);
         }
 
         [TestMethod]
         public void TestCallAndReturn()
         {
             var programBinary = new List<int> { 0x3C1, 0x00F, 0x302, 'F', '0', 0xA01, 0x300, 0x302, 'F', '1', 0xA01, 0x3F0 };
-            cpu.ProgramBinary = programBinary.Select(x => new Word { Value = x }).ToList();
+            cpu.Load(programBinary.Select(x => new Word { Value = x }).ToList());
 
             Assert.AreEqual(2, cpu.GetPCOfNthFunction(0));
             Assert.AreEqual(7, cpu.GetPCOfNthFunction(1));
