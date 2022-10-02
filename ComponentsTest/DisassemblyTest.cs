@@ -226,5 +226,111 @@ namespace Test
             Assert.AreEqual(5, pcLineMap[3]);
             Assert.AreEqual(6, pcLineMap[4]);
         }
+
+        [TestMethod]
+        public void FullAssemblyAndDisassembly()
+        {
+            var program = @"call MAIN
+int HALT
+deffunc COLLECT
+@loop
+read r2 KP
+movc -1
+cmp r2 const
+jez @done
+add r0 r2
+jmp @loop
+@done
+return
+endfunc
+deffunc ZEROREGS
+movc 0
+mov r0 const
+mov r1 const
+mov r2 const
+return
+endfunc
+deffunc MAIN
+call ZEROREGS
+call COLLECT
+movc 0
+addc 255
+cmp r0 const
+jez @unlock
+return
+@unlock
+int UNLOCK
+endfunc";
+
+            var expectedBinary = new List<int> {
+                0x3C2,
+                0x4F1,
+                0x307, 0x043, 0x04F, 0x04C, 0x04C, 0x045, 0x043, 0x054,
+                0x423,
+                0xFFF,
+                0x2B2,
+                0x603,
+                0x020,
+                0x5FB,
+                0x3F0,
+                0x300,
+
+                0x308, 0x05A, 0x045, 0x052, 0x04F, 0x052, 0x045, 0x047, 0x053,
+                0xF00,
+                0x230,
+                0x270,
+                0x2B0,
+                0x3F0,
+                0x300,
+
+                0x304, 0x04D, 0x041, 0x049, 0x04E,
+                0x3C1,
+                0x3C0,
+                0xF00,
+                0xAFF,
+                0x232,
+                0x602,
+                0x3F0,
+                0x4F0,
+                0x300};
+            var expectedBinaryWords = expectedBinary.Select(x => new Word { Value = x }).ToList();
+
+            var stackCPU = new StackCPU(new Port[] { new Port(new Pipe(), "KP") });
+
+            var assembled = Assembler.Assemble(stackCPU, program, out var pcLineMapFromAssembly);
+
+            Assert.AreEqual(assembled.Count, expectedBinaryWords.Count);
+            for(int i = 0; i < assembled.Count; i++)
+            {
+                Assert.AreEqual(new Word { Value = expectedBinary[i] }.Value, assembled[i].Value);
+            }
+
+            var disassembly = Disassembler.Disassemble(stackCPU, assembled, out var pcLineMapFromDisassembly);
+
+            // While the first disassembly of a program may not look like the original, if we disassemble the assembly of a program, and then
+            // assemble that text, the two assembled programs will be the same. Furthermore, if we disassemble that second-assembled binary,
+            // the texts of the two assemblies are the same.
+
+            var progBinary2 = Assembler.Assemble(stackCPU, disassembly, out var pcLineMapFromAssembly2);
+
+            Assert.AreEqual(progBinary2.Count, assembled.Count);
+            for(int i = 0; i < assembled.Count; i++)
+            {
+                Assert.AreEqual(progBinary2[i].Value, assembled[i].Value);
+            }
+            Assert.AreEqual(pcLineMapFromAssembly.Count, pcLineMapFromAssembly2.Count);
+            foreach (var k in pcLineMapFromAssembly.Keys)
+            {
+                Assert.AreEqual(pcLineMapFromAssembly[k], pcLineMapFromAssembly2[k]);
+            }
+
+            var disassembly2 = Disassembler.Disassemble(stackCPU, progBinary2, out var pcLineMapFromDisassembly2);
+            Assert.AreEqual(disassembly, disassembly2);
+            Assert.AreEqual(pcLineMapFromDisassembly.Count, pcLineMapFromDisassembly2.Count);
+            foreach (var k in pcLineMapFromDisassembly.Keys)
+            {
+                Assert.AreEqual(pcLineMapFromDisassembly[k], pcLineMapFromDisassembly2[k]);
+            }
+        }
     }
 }

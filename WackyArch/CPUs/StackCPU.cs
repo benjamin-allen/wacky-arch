@@ -14,7 +14,7 @@ namespace WackyArch.CPUs
 	{
 		public Stack Stack { get; set; }
 		public Memory Memory { get; set; }
-		private string programText { get; set; }
+		public string ProgramText { get; set; }
 		private List<Word> programBinary { get; set; }
 
 		public StackCPU() : base()
@@ -81,7 +81,7 @@ namespace WackyArch.CPUs
 				insn.Execute();
 
 				// Update the display program text and PCLineMap
-				programText = Disassembler.Disassemble(this, Memory.Words.ToList(), out PcLineMap);
+				ProgramText = Disassembler.Disassemble(this, Memory.Words.ToList(), out PcLineMap);
 
 				base.Cycle();
             }
@@ -106,13 +106,16 @@ namespace WackyArch.CPUs
 			IsHalted = true;
         }
 
-        public override void Reset()
-        {
+		public override void Reset()
+		{
 			base.Reset();
-			programText = Disassembler.Disassemble(this, programBinary, out PcLineMap);
-			for (int i = 0; i < programBinary.Count; i++)
-			{
-				Memory.Words[i] = programBinary[i];
+			if (programBinary != null)
+            {
+				ProgramText = Disassembler.Disassemble(this, programBinary, out PcLineMap);
+				for (int i = 0; i < programBinary.Count; i++)
+				{
+					Memory.Words[i] = programBinary[i];
+				}
 			}
 		}
     }

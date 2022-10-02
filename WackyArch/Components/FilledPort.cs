@@ -13,6 +13,11 @@
             Cycle();
         }
 
+        public void SetLoadedData(List<Word> data)
+        {
+            loadedData = data.Select(w => new Word { Value = w.Value }).ToList();
+        }
+
         public override void Cycle()
         {
             if (BacklogData.Count > 0 && (Pipe.Status == PipeStatus.Idle || Pipe.Status == PipeStatus.AwaitingWrite))

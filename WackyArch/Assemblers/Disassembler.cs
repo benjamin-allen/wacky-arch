@@ -12,14 +12,19 @@ namespace WackyArch.Assemblers
 {
     public static class Disassembler
     {
-        public static string Disassemble(CPU cpu, List<Word> programBinary, out Dictionary<int, int> pcLineMap)
+        public static List<Word> ShrinkBinary(List<Word> binary)
         {
-            // Where's the INT END instruction?
-            var intEndLoc = programBinary.FindIndex(x => x.Value == 0x3FF);
+            var intEndLoc = binary.FindLastIndex(x => x.Value == 0x4FF);
             if (intEndLoc != -1)
             {
-                programBinary = programBinary.Take(intEndLoc).ToList();
+                return binary.Take(intEndLoc+1).ToList();
             }
+            return binary;
+        }
+
+        public static string Disassemble(CPU cpu, List<Word> programBinary, out Dictionary<int, int> pcLineMap)
+        {
+            programBinary = ShrinkBinary(programBinary);
 
             // Pass 1. Get opcodes in place, but don't resolve call names, function names, or jump labels yet
             pcLineMap = new Dictionary<int, int>();
@@ -43,8 +48,9 @@ namespace WackyArch.Assemblers
                 if (line == Tokens.DefineFunction.Canonical)
                 {
                     var name = "";
-                    var nameLength = programBinary[pcLineMap.First(x => x.Value == i).Key].Value & 0x07F;
-                    for (int j = i + 1; j <= i + nameLength; j++)
+                    var pc = pcLineMap.First(x => x.Value == i).Key;
+                    var nameLength = programBinary[pc].Value & 0x07F;
+                    for (int j = pc + 1; j <= pc + nameLength; j++)
                     {
                         name = name + (char)(programBinary[j].Value & 0x7F);
                         pcLineMap[j] = i;

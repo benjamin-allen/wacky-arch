@@ -26,6 +26,7 @@
                 throw new ArgumentException("NumWords must be less than or equal to " + (Word.Max + 1));
             }
 
+            LastAddress = new Word { Value = 0 };
             Words = new Word[numWords];
             Address = new Pipe() { Name = "Addr" };
             Data = new AlwaysWriteablePipe() { Name = "Data" };
@@ -73,6 +74,7 @@
         public void Reset()
         {
             Fill(0);
+            LastAddress = new Word { Value = 0 };
         }
 
 
