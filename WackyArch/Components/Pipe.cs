@@ -19,7 +19,7 @@
         {
             if (Status != PipeStatus.AwaitingRead)
             {
-                Data.Value = value;
+                Data = new Word { Value = value };
                 Status = PipeStatus.AwaitingRead;
                 return true;
             }

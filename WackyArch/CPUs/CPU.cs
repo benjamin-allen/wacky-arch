@@ -9,7 +9,7 @@ namespace WackyArch.CPUs
 		public readonly Register Const;
 		public bool IncrementPC;
 		public bool IsHalted;
-		public bool IsErrored;
+		public bool IsInterrupted;
 		public Dictionary<int, int> PcLineMap;
 
 		private Word PC;
@@ -77,7 +77,7 @@ namespace WackyArch.CPUs
 
 			// Unset IsHalted
 			IsHalted = false;
-			IsErrored = false;
+			IsInterrupted = false;
 		}
 	}
 }

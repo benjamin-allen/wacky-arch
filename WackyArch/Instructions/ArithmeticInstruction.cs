@@ -73,7 +73,7 @@ namespace WackyArch.Instructions
 					Cpu.IncrementPC = true;
 					break; // No-op
 				default:
-					throw new InvalidOperationException("Invalid FuncCode!");
+					throw new ComponentException($"Invalid FuncCode {FuncCode}", $"Invalid FuncCode {FuncCode}");
 			}
 		}
 

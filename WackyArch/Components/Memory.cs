@@ -75,6 +75,7 @@
         {
             Fill(0);
             LastAddress = new Word { Value = 0 };
+            Data.Data = Words[LastAddress.Value];
         }
 
 

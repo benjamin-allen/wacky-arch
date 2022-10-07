@@ -53,19 +53,22 @@ namespace WackyArch.Instructions
 			}
 			else if (FuncCode == 3 && X == 3 && PortNumber == 0) // special "INTERRUPT/UNLOCK" instruction
             {
+				Cpu.IsInterrupted = true;
 				throw new Interrupt(InterruptType.UNLOCK);
             }
 			else if (FuncCode == 3 && X == 3 && PortNumber == 0x1) // special "INTERRUPT/HALT" instruction
             {
+				Cpu.IsInterrupted = true;
 				throw new Interrupt(InterruptType.HALT);
             }
 			else if (FuncCode == 3 && X == 3 && PortNumber == 0xF) // special "INTERRUPT/HALT" instruction
 			{
+				Cpu.IsInterrupted = true;
 				throw new Interrupt(InterruptType.END);
 			}
 			else
             {
-				throw new NotImplementedException("Invalid Interrupt.");
+				throw new ComponentException("Invalid Interrupt.", "Invalid Interrupt.");
             }
 		}
 

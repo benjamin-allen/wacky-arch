@@ -52,7 +52,7 @@ namespace WackyArch.Instructions
 					Cpu.IncrementPC = false;
 					break;
 				default:
-					throw new InvalidOperationException("Invalid Opcode!");
+					throw new ComponentException($"Invalid Opcode {Opcode}!", $"Invalid Opcode {Opcode}!");
 			}
 		}
 

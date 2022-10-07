@@ -42,7 +42,7 @@ namespace WackyArch.Instructions
 					Cpu.Const.Data.Value = Utilities.Utilities.SignExtend(Value, 7);
 					break;
 				default:
-					throw new InvalidOperationException("Invalid FuncCode!");
+					throw new ComponentException($"Invalid Opcode {Opcode}", $"Invalid Opcode {Opcode}");
 			}
 		}
 

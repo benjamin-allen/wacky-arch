@@ -9,7 +9,7 @@ namespace WackyArch.Components
 {
 	public class Stack : ICyclable
 	{
-		public static int MaxWords = 14;
+		public static int MaxWords = 15;
 		public Word[] Words;
 		public int SP { get; set; }
 		public StackPipe StackInterface { get; set; }
@@ -33,6 +33,7 @@ namespace WackyArch.Components
 				StackInterface.Status = PipeStatus.Idle;
 				if (SP == 15) {
 					SP = newVal.Value & 0x00F; // Sets a new stack pointer (!!!)
+					StackInterface.Write(Words[SP - 1].Value);
 				}
 				else
                 {
@@ -54,7 +55,7 @@ namespace WackyArch.Components
 
 		public void Reset()
 		{
-			SP = -1;
+			SP = 0;
 			Words = new Word[MaxWords];
 		}
 	}

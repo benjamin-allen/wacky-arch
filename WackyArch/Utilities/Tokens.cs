@@ -41,7 +41,8 @@
 			MnemonicTokens = LongATypeMnemonicTokens.Concat(ShortATypeMnemonicTokens)
 							.Concat(PTypeMnemonicTokens).Concat(MTypeMnemonicTokens)
 							.Concat(CTypeMnemonicTokens).Concat(JTypeMnemonicTokens)
-							.Concat(InterruptTokens).Concat(FunctionTokens).ToList();
+							.Concat(InterruptTokens).Concat(FunctionTokens)
+							.Concat(new List<Token> { NoOp }).ToList();
 		}
 
 		// All mnemonics are in uppercase. Incoming text will be converted to uppercase.

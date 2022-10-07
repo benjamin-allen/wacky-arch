@@ -66,6 +66,10 @@ namespace WackyArch.Assemblers
 					// Long A type
 					result = AssembleLongAType(tokens, i);
 				}
+				else if (Tokens.GetCanonicalToken(tokens[0], Tokens.MnemonicTokens) == Tokens.NoOp.Canonical)
+                {
+					result = new Word { Value = 0x00F };
+                }
 				else if(Tokens.CheckTokenMatch(tokens[0], Tokens.ShortATypeMnemonicTokens))
 				{
 					// Short A Type
@@ -359,6 +363,10 @@ namespace WackyArch.Assemblers
 			switch (Tokens.GetCanonicalToken(tokens[0], Tokens.FunctionTokens))
 			{
 				case "DEFFUNC":
+					if (tokens[1].Length > 16)
+                    {
+						throw new AssemblerException("Function names must be less than 16 characters", i, String.Join(" ", tokens));
+                    }
 					var wordList = new List<Word> { new Word { Value = 0b0011_0000_0000 + tokens[1].Length } };
 					foreach (char x in tokens[1])
 					{

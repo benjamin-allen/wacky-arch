@@ -47,7 +47,7 @@ namespace WackyArch.Instructions
 					}
 					break;
 				default:
-					throw new InvalidOperationException("Invalid FuncCode!");
+					throw new ComponentException($"Invalid FuncCode {FuncCode}!", $"Invalid FuncCode {FuncCode}!");
 			}
 		}
 

@@ -81,7 +81,8 @@ namespace WackyArch.CPUs
 				insn.Execute();
 
 				// Update the display program text and PCLineMap
-				ProgramText = Disassembler.Disassemble(this, Memory.Words.ToList(), out PcLineMap);
+				// ProgramText = Disassembler.Disassemble(this, Memory.Words.ToList(), out PcLineMap);
+				// MAJOR PERFORMANCE REGRESSION ^^^^^^^^^^^^^^
 
 				base.Cycle();
             }
@@ -101,7 +102,7 @@ namespace WackyArch.CPUs
             {
 				throw new ComponentException($"Can't load a binary of size {binary.Count} into memory of size {Memory.Words.Length}", "Binary too big!");
             }
-			programBinary = binary;
+			programBinary = binary.Select(x => new Word { Value = x.Value }).ToList();
 			Reset();
 			IsHalted = true;
         }
@@ -109,13 +110,17 @@ namespace WackyArch.CPUs
 		public override void Reset()
 		{
 			base.Reset();
+			Stack.Reset();
+			Memory.Reset();
 			if (programBinary != null)
             {
 				ProgramText = Disassembler.Disassemble(this, programBinary, out PcLineMap);
 				for (int i = 0; i < programBinary.Count; i++)
 				{
-					Memory.Words[i] = programBinary[i];
+					Memory.Words[i].Value = programBinary[i].Value;
 				}
+				Memory.Address.Data.Value = 0;
+				Memory.Data.Data.Value = Memory.Words[Memory.Address.Data.Value].Value;
 			}
 		}
     }
